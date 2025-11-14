@@ -37,6 +37,10 @@ from tau2.domains.collab.environment import (
     get_environment as collab_domain_get_environment,
 )
 from tau2.domains.collab.environment import get_tasks as collab_domain_get_tasks
+from tau2.domains.email.environment import (
+    get_environment as email_domain_get_environment,
+)
+from tau2.domains.email.environment import get_tasks as email_domain_get_tasks
 
 
 class RegistryInfo(BaseModel):
@@ -161,9 +165,9 @@ class Registry:
         """
         try:
             info = RegistryInfo(
-                users=self.get_users(),
-                agents=self.get_agents(),
                 domains=self.get_domains(),
+                agents=self.get_agents(),
+                users=self.get_users(),
                 task_sets=self.get_task_sets(),
             )
             return info
@@ -197,6 +201,8 @@ try:
     registry.register_tasks(telecom_domain_get_tasks, "telecom-workflow")
     registry.register_domain(collab_domain_get_environment, "collab")
     registry.register_tasks(collab_domain_get_tasks, "collab")
+    registry.register_domain(email_domain_get_environment, "email")
+    registry.register_tasks(email_domain_get_tasks, "email")
     logger.debug(
         f"Default components registered successfully. Registry info: {json.dumps(registry.get_info().model_dump(), indent=2)}"
     )
