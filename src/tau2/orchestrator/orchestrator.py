@@ -277,6 +277,8 @@ class Orchestrator:
             user_cost=user_cost,
             agent_cost=agent_cost,
             messages=messages,
+            assistant_system_prompt=getattr(self.agent, "system_prompt", None),
+            user_system_prompt=getattr(self.user, "system_prompt", None),
             seed=self.seed,
         )
         return simulation_run

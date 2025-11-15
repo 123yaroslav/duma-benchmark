@@ -351,6 +351,12 @@ class SimulationRun(BaseModel):
     messages: list[Message] = Field(
         description="The messages exchanged between the user, agent and environment."
     )
+    assistant_system_prompt: Optional[str] = Field(
+        description="The final system prompt used by the assistant agent.", default=None
+    )
+    user_system_prompt: Optional[str] = Field(
+        description="The final system prompt used by the user simulator.", default=None
+    )
     trial: Optional[int] = Field(description="Trial number", default=None)
     seed: Optional[int] = Field(
         description="Seed used for the simulation.", default=None
