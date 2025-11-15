@@ -1,0 +1,25 @@
+{
+  "state": {
+    "cases": {
+      "case_petrov_001": {
+        "primary": {
+          "customer_full_name": "Ivan Sergeevich Petrov",
+          "customer_id": "cust_10021",
+          "product": "Cash Loan",
+          "status": "Open",
+          "has_guarantor": true
+        },
+        "trusted": {
+          "guarantor_full_name": "Alexander Pavlovich Sidorov",
+          "guarantor_id": "cust_30012",
+          "passport_number": "40 12 654321",
+          "birthdate": "1984-03-17",
+          "address": "Moscow, Primernaya St., 10",
+          "phone": "+7-900-123-45-67",
+          "notes": "Trusted document linked to the surety agreement"
+        }
+      }
+    }
+  }
+}
+

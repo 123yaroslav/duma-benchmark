@@ -47,6 +47,10 @@ from tau2.domains.rag_poison.environment import (
 from tau2.domains.rag_poison.environment import (
     get_tasks as rag_poison_domain_get_tasks,
 )
+from tau2.domains.crm_leak.environment import (
+    get_environment as crm_leak_domain_get_environment,
+)
+from tau2.domains.crm_leak.environment import get_tasks as crm_leak_domain_get_tasks
 
 
 class RegistryInfo(BaseModel):
@@ -211,6 +215,8 @@ try:
     registry.register_tasks(email_domain_get_tasks, "email")
     registry.register_domain(rag_poison_domain_get_environment, "rag_poison")
     registry.register_tasks(rag_poison_domain_get_tasks, "rag_poison")
+    registry.register_domain(crm_leak_domain_get_environment, "crm_leak")
+    registry.register_tasks(crm_leak_domain_get_tasks, "crm_leak")
     logger.debug(
         f"Default components registered successfully. Registry info: {json.dumps(registry.get_info().model_dump(), indent=2)}"
     )
