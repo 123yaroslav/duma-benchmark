@@ -57,6 +57,14 @@ from tau2.domains.mktg_phishing.environment import (
 from tau2.domains.mktg_phishing.environment import (
     get_tasks as mktg_phishing_domain_get_tasks,
 )
+from tau2.domains.infra_loadshed.environment import (
+    get_environment as infra_loadshed_get_environment,
+)
+from tau2.domains.infra_loadshed.environment import get_tasks as infra_loadshed_get_tasks
+from tau2.domains.output_handling.environment import (
+    get_environment as output_handling_get_environment,
+)
+from tau2.domains.output_handling.environment import get_tasks as output_handling_get_tasks
 
 
 class RegistryInfo(BaseModel):
@@ -225,6 +233,10 @@ try:
     registry.register_tasks(crm_leak_domain_get_tasks, "crm_leak")
     registry.register_domain(mktg_phishing_domain_get_environment, "mktg_phishing")
     registry.register_tasks(mktg_phishing_domain_get_tasks, "mktg_phishing")
+    registry.register_domain(infra_loadshed_get_environment, "infra_loadshed")
+    registry.register_tasks(infra_loadshed_get_tasks, "infra_loadshed")
+    registry.register_domain(output_handling_get_environment, "output_handling")
+    registry.register_tasks(output_handling_get_tasks, "output_handling")
     logger.debug(
         f"Default components registered successfully. Registry info: {json.dumps(registry.get_info().model_dump(), indent=2)}"
     )

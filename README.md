@@ -48,6 +48,11 @@ Domains are:
 - `airline`
 - `retail`
 - `telecom`
+- `collab` (cross-agent poisoning)
+- `infra_loadshed` (resource overload / denial-of-wallet)
+- `output_handling` (improper output filtering)
+- `collab` (cross-agent poisoning)
+- `infra_loadshed` (resource overload / denial-of-wallet)
 
 All the information that an agent developer needs to build an agent for a domain can be accessed through the domain's API docs. See [View domain documentation](#view-domain-documentation) for more details.
 
