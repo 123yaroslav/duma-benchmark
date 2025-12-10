@@ -6,57 +6,52 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{ai_safe_2025}
-\citation{owasp_llm_2025}
-\citation{owasp_llm_2025}
-\citation{owasp_agents_2025}
-\citation{ai_safe_2025}
 \babel@aux{russian}{}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Введение}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Актуальность исследования}{1}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Контекст и постановка задачи}{1}{subsection.1.1}\protected@file@percent }
+\citation{ai_safe_2025}
+\citation{ai_safe_2025}
+\citation{agent_bench}
+\citation{asb}
+\citation{agent_dojo}
 \citation{tau_bench_2024}
 \citation{tau2_bench_2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Недостаточность существующих методов}{2}{subsection.1.2}\protected@file@percent }
+\citation{agent_bench}
+\citation{tau_bench_2024}
+\citation{tau2_bench_2025}
+\citation{amato_2013}
+\citation{asb}
+\citation{agent_dojo}
+\citation{owasp_llm_2025}
+\citation{owasp_agents_2025}
 \citation{ai_safe_2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Цели и задачи исследования}{2}{subsection.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Научная новизна}{2}{subsection.1.3}\protected@file@percent }
-\citation{ai_safe_2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Вклад работы (Contributions)}{3}{subsection.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Бенчмарки для оценки агентных систем}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Оценка безопасности LLM-агентов}{3}{subsection.2.2}\protected@file@percent }
 \citation{amato_2013}
 \citation{tau2_bench_2025}
-\citation{ai_safe_2025}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Теоретические основы}{3}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Архитектура агентных систем на основе LLM}{3}{subsection.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Модель двойного управления (Dual-Control)}{3}{subsection.2.2}\protected@file@percent }
-\citation{tau2_bench_2025}
-\citation{ai_safe_2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Фреймворк моделирования угроз AI-SAFE}{4}{subsection.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Методология исследования}{4}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Базовый бенчмарк $\tau ^2$-bench}{4}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Добавленные домены безопасности}{4}{subsection.3.2}\protected@file@percent }
-\citation{owasp_agents_2025}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Домен mail\_rag\_phishing (Отравление RAG через фишинговые письма)}{5}{subsubsection.3.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Домен collab (Атаки через межагентное взаимодействие)}{5}{subsubsection.3.2.2}\protected@file@percent }
-\citation{owasp_llm_2025}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Домен output\_handling (Некорректная обработка выводов)}{6}{subsubsection.3.2.3}\protected@file@percent }
-\citation{ai_safe_2025}
-\citation{owasp_llm_2025}
-\citation{owasp_agents_2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Базовые векторы атак}{7}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Фреймворки моделирования угроз}{4}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Позиционирование данной работы}{4}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{4}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Формальная постановка задачи}{4}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Модель взаимодействия (Dec-POMDP)}{4}{subsubsection.3.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Модель атакующего}{4}{subsubsection.3.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Метрики оценки}{5}{subsubsection.3.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Разработанные домены безопасности}{5}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Домен \texttt  {mail\_rag\_phishing} (Отравление RAG)}{5}{subsubsection.3.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Домен \texttt  {collab} (Межагентное взаимодействие)}{6}{subsubsection.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Домен \texttt  {output\_handling} (Обработка выводов)}{7}{subsubsection.3.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Соответствие доменов и векторов атак}{7}{subsection.3.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Соответствие доменов и векторов атак}}{7}{table.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Цели тестирования и метрики}{7}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Цель тестирования}{7}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Метрики оценки}{8}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Метрика pass@k}{8}{subsubsection.4.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Attack Success Rate (ASR)}{8}{subsubsection.4.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Дополнительные метрики}{8}{subsubsection.4.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Отличия от метрик $\tau ^2$-bench}{9}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Условия экспериментов}{9}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Изменяемые параметры}{9}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}LLM внутри агентной системы}{9}{subsubsection.5.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}LLM-пользователь}{9}{subsubsection.5.1.2}\protected@file@percent }
-\citation{llama_guard}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Протокол эксперимента}{10}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Требования к статистической значимости}{10}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Характеристика атакующей модели}{10}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Планируемые Guardrails}{10}{subsection.5.5}\protected@file@percent }
+\newlabel{tab:attack_vectors}{{1}{7}{Соответствие доменов и векторов атак}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Ограничения и предположения}{7}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{8}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Постановка экспериментов}{8}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Исследуемые модели}{8}{subsubsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Варьируемые параметры}{8}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Метрики}{8}{subsubsection.4.1.3}\protected@file@percent }
 \gdef \LT@i {\LT@entry 
     {1}{26.22636pt}\LT@entry 
     {1}{83.13188pt}\LT@entry 
@@ -64,24 +59,21 @@
     {1}{40.45274pt}\LT@entry 
     {1}{111.58464pt}\LT@entry 
     {1}{40.45274pt}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Результаты экспериментов}{11}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Пилотные замеры}{11}{subsection.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{Результаты пилотных замеров по кейсам безопасности агентной системы}}{11}{table.2}\protected@file@percent }
-\newlabel{tab:results}{{2}{11}{Результаты пилотных замеров по кейсам безопасности агентной системы}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Агрегированные результаты по моделям}{12}{subsection.6.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Сравнение устойчивости моделей по доменам (pass@1)}}{12}{table.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Предварительный анализ}{12}{subsection.6.3}\protected@file@percent }
-\citation{agent_dojo}
-\citation{tau2_bench_2025}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Ключевые исследовательские вопросы}{13}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Гипотезы для проверки}{13}{subsection.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}Связь с существующими работами}{13}{section.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Отличие от Agent Dojo}{13}{subsection.8.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Развитие идей $\tau ^2$-bench}{14}{subsection.8.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {9}Заключение и дальнейшие направления}{14}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Выводы}{14}{subsection.9.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Ограничения исследования}{14}{subsection.9.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Планы развития}{14}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Протокол}{9}{subsubsection.4.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Пилотные результаты}{9}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{Результаты пилотных замеров по кейсам безопасности}}{9}{table.2}\protected@file@percent }
+\newlabel{tab:results}{{2}{9}{Результаты пилотных замеров по кейсам безопасности}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results \& Discussion}{10}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Агрегированные результаты}{10}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Сравнение устойчивости моделей по доменам (pass@1)}}{10}{table.3}\protected@file@percent }
+\newlabel{tab:aggregated}{{3}{10}{Сравнение устойчивости моделей по доменам (pass@1)}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Анализ результатов}{10}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Влияние размера модели}{10}{subsubsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Уязвимость RAG-систем}{11}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Влияние температуры пользователя}{11}{subsubsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Стоимость безопасности}{11}{subsubsection.5.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Failure Cases}{11}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{11}{section.6}\protected@file@percent }
 \citation{duma_bench}
 \bibcite{ai_safe_2025}{1}
 \bibcite{owasp_llm_2025}{2}
@@ -89,7 +81,10 @@
 \bibcite{tau_bench_2024}{4}
 \bibcite{tau2_bench_2025}{5}
 \bibcite{amato_2013}{6}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Limitations}{12}{section.7}\protected@file@percent }
 \bibcite{agent_dojo}{7}
-\bibcite{llama_guard}{8}
-\bibcite{duma_bench}{9}
-\gdef \@abspage@last{15}
+\bibcite{agent_bench}{8}
+\bibcite{asb}{9}
+\bibcite{llama_guard}{10}
+\bibcite{duma_bench}{11}
+\gdef \@abspage@last{13}
