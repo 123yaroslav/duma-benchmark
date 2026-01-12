@@ -1,13 +1,11 @@
-# $\tau^2$-Bench: Evaluating Conversational Agents in a Dual-Control Environment
+# DUMA-Bench: Dual-Control Multi Agent systems vulnerabilities benchmark
 
 [![python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![arXiv](http://img.shields.io/badge/cs.AI-arXiv%3A2506.07982-B31B1B.svg?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2506.07982)
-[![blog](https://img.shields.io/badge/blog-tau2--bench-green)](https://sierra.ai/blog/benchmarking-agents-in-collaborative-real-world-scenarios)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/sierra.svg?style=social&label=Follow%20%40SierraPlatform)](https://x.com/SierraPlatform/status/1932464265207889974)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/posts/sierra_last-year-we-introduced-%F0%9D%9C%8F-bench-a-benchmark-activity-7338229693898231809-F8L4?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAdc8goBmhEsiEo1_t_XSJbAnY4_zMfAWcE)
-[![Leaderboard](https://img.shields.io/badge/🏆_Live_Leaderboard-taubench.com-brightgreen?style=flat)](https://taubench.com)
+
+
+
 
 <div align="center">
 <img src="figs/overview.png" width="95%" alt="System Overview"><br>
@@ -21,19 +19,11 @@
 
 ## 🆕 What's New
 
-### 🏆 Live Leaderboard (v0.2.0)
-The τ²-bench leaderboard is now live at **[taubench.com](https://taubench.com)**! 
 
-- **📊 Interactive Rankings**: Compare model performance across all domains
-- **📱 Mobile-Friendly**: View results on any device  
-- **🔍 Detailed Analysis**: Explore trajectories and conversation flows
-- **📥 Easy Submission**: Submit your results directly through the interface
-
-[**→ Visit the Leaderboard**](https://taubench.com) | [**→ Submit Your Results**](#leaderboard-submission)
 
 ## Overview
 
-$\tau^2$-bench implements a simulation framework for evaluating customer service agents across various domains.
+DUMA-bench implements a simulation framework for evaluating customer service agents across various domains.
 
 Each domain specifies:
 - a policy that the agent must follow
@@ -51,24 +41,28 @@ Domains are:
 
 All the information that an agent developer needs to build an agent for a domain can be accessed through the domain's API docs. See [View domain documentation](#view-domain-documentation) for more details.
 
+## Authors ([ai-securitylab ITMO](https://github.com/ai-security-lab-itmo))
+* [Aleksandrov Ivan](https://github.com/Ivanich-spb)
+* [Kochnev German](https://github.com/germanKoch)
+
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/sierra-research/tau2-bench
-cd tau2-bench
+git clone https://github.com/ai-security-lab-itmo/duma-benchmark.git
+cd duma-benchmark
 ```
 
 2. Create a new environment (optional)
 
-$\tau^2$-bench requires Python 3.10 or higher. You may create and activate a new environment:
+DUMA-benchmark requires Python 3.10 or higher. You may create and activate a new environment:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Install tau2
+3. Install DUMA
 
 ```bash
 pip install -e .
@@ -352,7 +346,7 @@ For local or remote agent evaluation, see our [agent developer guide](src/tau2/a
 
 ## Contributing
 
-We welcome contributions to τ²-bench! Whether you're fixing bugs, adding new features, creating new domains, or contributing experimental research code, please see our [Contributing Guide](CONTRIBUTING.md) for detailed guidelines on:
+We welcome contributions to DUMA-bench! Whether you're fixing bugs, adding new features, creating new domains, or contributing experimental research code, please see our [Contributing Guide](CONTRIBUTING.md) for detailed guidelines on:
 
 - **Opening issues** before starting work
 - **Branch naming conventions** and development workflow  
@@ -403,18 +397,4 @@ sequenceDiagram
         Note over O: Check if max turns reached.
     end
     Note over O: Return simulation run
-```
-
-## Citation
-
-```bibtex
-@misc{barres2025tau2,
-      title={$\tau^2$-Bench: Evaluating Conversational Agents in a Dual-Control Environment}, 
-      author={Victor Barres and Honghua Dong and Soham Ray and Xujie Si and Karthik Narasimhan},
-      year={2025},
-      eprint={2506.07982},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2506.07982}, 
-}
 ```
