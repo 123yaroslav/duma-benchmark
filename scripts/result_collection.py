@@ -19,6 +19,27 @@ from tau2.data_model.simulation import MultiDomainResults, Results
 from tau2.metrics.agent_metrics import is_successful, pass_hat_k
 
 
+def _normalize_model_name(model: str | None) -> str:
+    """Normalize provider-prefixed model names for comparison/reporting.
+
+    Examples:
+    - openrouter/openai/gpt-4o -> gpt-4o
+    - openai/gpt-4o-mini -> gpt-4o-mini
+    - gpt-4o -> gpt-4o
+    """
+    if not isinstance(model, str):
+        return str(model)
+
+    if model.startswith("openrouter/"):
+        return model.split("/")[-1]
+
+    # Some routing code may turn plain models into openai/<model>
+    if model.startswith("openai/"):
+        return model.split("/", 1)[1]
+
+    return model
+
+
 def load_simulation_file(file_path: str | Path) -> Dict[str, Results]:
     """
     Load a simulation file and return a dictionary mapping domain names to Results.
@@ -35,15 +56,21 @@ def load_simulation_file(file_path: str | Path) -> Dict[str, Results]:
     # Try to load as MultiDomainResults first
     try:
         multi_domain_results = MultiDomainResults.load(file_path)
-        return multi_domain_results.domains
+        # Если domains не пустой, вернуть его
+        if multi_domain_results.domains:
+            return multi_domain_results.domains
+        # Если domains пустой, значит это был обычный Results, сохраненный в формате MultiDomainResults
+        # Попробуем загрузить как обычный Results
     except Exception:
-        # Fall back to single-domain Results format
-        try:
-            results = Results.load(file_path)
-            domain_name = results.info.environment_info.domain_name
-            return {domain_name: results}
-        except Exception as e:
-            raise ValueError(f"Failed to load simulation file {file_path}: {e}")
+        pass  # Продолжим попытку загрузки как Results
+    
+    # Fall back to single-domain Results format
+    try:
+        results = Results.load(file_path)
+        domain_name = results.info.environment_info.domain_name
+        return {domain_name: results}
+    except Exception as e:
+        raise ValueError(f"Failed to load simulation file {file_path}: {e}")
 
 
 def load_simulations(file_paths: List[str | Path]) -> Dict[str, Results]:
@@ -121,11 +148,41 @@ def compute_task_metrics(results: Results, task_id: str) -> Dict[str, Any]:
             if num_trials >= k:
                 metrics[f"pass^{k}"] = float(pass_hat_k(num_trials, success_count, k))
         
+        # Compute ASR (Attack Success Rate = 1 - pass@1)
+        pass_1 = metrics.get("pass^1", 0.0)
+        metrics["ASR"] = float(1.0 - pass_1)
+        
         # Compute statistical significance metrics for pass@1
         stats = compute_statistical_significance(success_count, num_trials, method='wilson')
         metrics['pass^1_ci_lower'] = stats['ci_lower']
         metrics['pass^1_ci_upper'] = stats['ci_upper']
         metrics['pass^1_proportion'] = stats['proportion']
+        
+        # Compute confidence intervals for continuous metrics
+        if len(rewards) > 0:
+            reward_ci_lower, reward_ci_upper = t_confidence_interval(rewards)
+            metrics['avg_reward_ci_lower'] = reward_ci_lower
+            metrics['avg_reward_ci_upper'] = reward_ci_upper
+        
+        if agent_costs and len(agent_costs) > 0 and any(c > 0 for c in agent_costs):
+            agent_cost_ci_lower, agent_cost_ci_upper = t_confidence_interval(agent_costs)
+            metrics['avg_agent_cost_ci_lower'] = agent_cost_ci_lower
+            metrics['avg_agent_cost_ci_upper'] = agent_cost_ci_upper
+        
+        if user_costs and len(user_costs) > 0 and any(c > 0 for c in user_costs):
+            user_cost_ci_lower, user_cost_ci_upper = t_confidence_interval(user_costs)
+            metrics['avg_user_cost_ci_lower'] = user_cost_ci_lower
+            metrics['avg_user_cost_ci_upper'] = user_cost_ci_upper
+        
+        if len(durations) > 0:
+            duration_ci_lower, duration_ci_upper = t_confidence_interval(durations)
+            metrics['avg_duration_ci_lower'] = duration_ci_lower
+            metrics['avg_duration_ci_upper'] = duration_ci_upper
+        
+        if len(num_messages) > 0:
+            num_messages_ci_lower, num_messages_ci_upper = t_confidence_interval(num_messages)
+            metrics['avg_num_messages_ci_lower'] = num_messages_ci_lower
+            metrics['avg_num_messages_ci_upper'] = num_messages_ci_upper
 
     return metrics
 
@@ -150,13 +207,13 @@ def generate_metrics_table(simulation_files: List[str | Path]) -> pd.DataFrame:
 
         for domain_name, results in file_domains.items():
             # Extract configuration info from this specific Results object
-            user_model = results.info.user_info.llm
+            user_model = _normalize_model_name(results.info.user_info.llm)
             user_model_params = (
                 json.dumps(results.info.user_info.llm_args)
                 if results.info.user_info.llm_args
                 else "{}"
             )
-            agent_model = results.info.agent_info.llm
+            agent_model = _normalize_model_name(results.info.agent_info.llm)
             agent_model_params = (
                 json.dumps(results.info.agent_info.llm_args)
                 if results.info.agent_info.llm_args
@@ -468,10 +525,10 @@ def format_pass_k_with_ci(
         significance: Significance level to append
     
     Returns:
-        Formatted string like "3/6 (50%) [CI: 18%--82%]***"
+        Formatted string like "3/6 (50\\%) [CI: 18\\%--82\\%]***" (экранированные % для LaTeX)
     """
     if trials == 0:
-        return "0/0 (0%)"
+        return "0/0 (0\\%)"
     
     proportion = successes / trials
     ci_lower, ci_upper = wilson_confidence_interval(successes, trials) if method == 'wilson' \
@@ -484,9 +541,193 @@ def format_pass_k_with_ci(
     ci_lower_pct = f"{ci_lower:.0%}" if ci_lower < 0.01 or ci_lower > 0.99 else f"{ci_lower:.1%}"
     ci_upper_pct = f"{ci_upper:.0%}" if ci_upper < 0.01 or ci_upper > 0.99 else f"{ci_upper:.1%}"
     
-    result = f"{successes}/{trials} ({pct_str}) [CI: {ci_lower_pct}--{ci_upper_pct}]"
+    # Экранировать % для LaTeX
+    pct_str = pct_str.replace('%', '\\%')
+    ci_lower_pct = ci_lower_pct.replace('%', '\\%')
+    ci_upper_pct = ci_upper_pct.replace('%', '\\%')
+    
+    # Более компактный формат: убираем "CI:" для экономии места
+    result = f"{successes}/{trials} ({pct_str}) [{ci_lower_pct}--{ci_upper_pct}]"
     if significance:
         result += significance
     
     return result
+
+
+def t_confidence_interval(values: List[float], confidence: float = 0.95) -> Tuple[float, float]:
+    """
+    Calculate t-confidence interval for the mean of continuous metrics.
+    
+    Args:
+        values: List of continuous metric values
+        confidence: Confidence level (default 0.95 for 95% CI)
+    
+    Returns:
+        Tuple of (lower_bound, upper_bound)
+    """
+    if len(values) == 0:
+        return (0.0, 0.0)
+    
+    if len(values) == 1:
+        # Single value, return it as both bounds
+        return (values[0], values[0])
+    
+    values_array = np.array(values)
+    n = len(values_array)
+    mean = np.mean(values_array)
+    std = np.std(values_array, ddof=1)  # Sample standard deviation
+    
+    # Calculate t-statistic
+    alpha = 1 - confidence
+    t_value = stats.t.ppf(1 - alpha / 2, df=n - 1)
+    
+    # Calculate margin of error
+    margin = t_value * (std / np.sqrt(n))
+    
+    lower = mean - margin
+    upper = mean + margin
+    
+    return (float(lower), float(upper))
+
+
+def t_test_independent(group1: List[float], group2: List[float]) -> Tuple[float, str]:
+    """
+    Perform independent samples t-test to compare two groups of continuous metrics.
+    
+    Args:
+        group1: List of values from group 1
+        group2: List of values from group 2
+    
+    Returns:
+        Tuple of (p-value, significance_level) where significance_level is:
+        '***' for p < 0.001, '**' for p < 0.01, '*' for p < 0.05, '' otherwise
+    """
+    if len(group1) == 0 or len(group2) == 0:
+        return (1.0, '')
+    
+    group1_array = np.array(group1)
+    group2_array = np.array(group2)
+    
+    # Perform t-test
+    try:
+        t_stat, p_value = stats.ttest_ind(group1_array, group2_array)
+    except Exception:
+        # If test fails, return non-significant
+        return (1.0, '')
+    
+    # Determine significance level
+    if p_value < 0.001:
+        sig_level = '***'
+    elif p_value < 0.01:
+        sig_level = '**'
+    elif p_value < 0.05:
+        sig_level = '*'
+    else:
+        sig_level = ''
+    
+    return (float(p_value), sig_level)
+
+
+def z_test_proportions(
+    group1_successes: int,
+    group1_trials: int,
+    group2_successes: int,
+    group2_trials: int
+) -> Tuple[float, str]:
+    """
+    Perform Z-test for comparing two proportions (for large samples, n >= 20).
+    
+    Args:
+        group1_successes: Number of successes in group 1
+        group1_trials: Total trials in group 1
+        group2_successes: Number of successes in group 2
+        group2_trials: Total trials in group 2
+    
+    Returns:
+        Tuple of (p-value, significance_level)
+    """
+    if group1_trials == 0 or group2_trials == 0:
+        return (1.0, '')
+    
+    p1 = group1_successes / group1_trials
+    p2 = group2_successes / group2_trials
+    
+    # Pooled proportion
+    p_pooled = (group1_successes + group2_successes) / (group1_trials + group2_trials)
+    
+    # Standard error
+    se = np.sqrt(p_pooled * (1 - p_pooled) * (1 / group1_trials + 1 / group2_trials))
+    
+    if se == 0:
+        return (1.0, '')
+    
+    # Z-statistic
+    z_stat = (p1 - p2) / se
+    
+    # Two-tailed p-value
+    p_value = 2 * (1 - stats.norm.cdf(abs(z_stat)))
+    
+    # Determine significance level
+    if p_value < 0.001:
+        sig_level = '***'
+    elif p_value < 0.01:
+        sig_level = '**'
+    elif p_value < 0.05:
+        sig_level = '*'
+    else:
+        sig_level = ''
+    
+    return (float(p_value), sig_level)
+
+
+def compare_conversion_metrics(
+    group1_successes: int,
+    group1_trials: int,
+    group2_successes: int,
+    group2_trials: int
+) -> Tuple[float, str]:
+    """
+    Compare discrete conversion metrics (pass@1, ASR) between two groups.
+    
+    Uses Fisher's exact test for small samples (n < 20) or Z-test for large samples (n >= 20).
+    If no suitable test is available, falls back to t-test.
+    
+    Args:
+        group1_successes: Number of successes in group 1
+        group1_trials: Total trials in group 1
+        group2_successes: Number of successes in group 2
+        group2_trials: Total trials in group 2
+    
+    Returns:
+        Tuple of (p-value, significance_level)
+    """
+    # Use Fisher's exact test for small samples
+    if group1_trials < 20 or group2_trials < 20:
+        return fisher_exact_test(group1_successes, group1_trials, group2_successes, group2_trials)
+    
+    # Use Z-test for large samples
+    if group1_trials >= 20 and group2_trials >= 20:
+        return z_test_proportions(group1_successes, group1_trials, group2_successes, group2_trials)
+    
+    # Fallback to t-test (convert to proportions)
+    group1_props = [1.0] * group1_successes + [0.0] * (group1_trials - group1_successes)
+    group2_props = [1.0] * group2_successes + [0.0] * (group2_trials - group2_successes)
+    return t_test_independent(group1_props, group2_props)
+
+
+def compare_continuous_metrics(
+    group1_values: List[float],
+    group2_values: List[float]
+) -> Tuple[float, str]:
+    """
+    Compare continuous metrics between two groups using t-test.
+    
+    Args:
+        group1_values: List of continuous metric values from group 1
+        group2_values: List of continuous metric values from group 2
+    
+    Returns:
+        Tuple of (p-value, significance_level)
+    """
+    return t_test_independent(group1_values, group2_values)
 
