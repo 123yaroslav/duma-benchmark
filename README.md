@@ -403,41 +403,39 @@ For experimental features and research code, check out the [`@experiments/`](src
 
 ```mermaid
 sequenceDiagram
-    participant O as Orchestrator
-    participant A as Agent
-    participant U as UserSimulator
-    participant E as Environment
+    autonumber
+    participant U as User / Attacker
+    participant O as DUMA Orchestrator
+    participant A as Agent (Target LLM)
+    participant E as Environment & Tools
+    participant P as Policy Engine (Threat Analysis)
+    participant EV as Evaluator
 
-    Note over O: Initialize(task)
-    rect rgb(100, 150, 150)
-        O->>A: get_init_state_info(message_history)
-        A->>O: agent_state_info
-        O->>U: get_init_state_info(message_history)
-        U->>O: user_state_info
-        O->>E: set_state(initialization_data, initialization_actions, message_history)
-    end
-    Note over O: Start simulation
-    loop Pass messages between Agent, User, and Environment
+    Note over U, O: Initialization
+    U->>O: Trigger Interaction / Attack Scenario
+    O->>A: Provide System Prompt & SOP
 
-        alt Agent/Env to User
-            rect rgb(200, 150, 150)
-            O->>U: generate_next_message(msg, user_state_info)
-            U-->>O: (user_msg, user_state_info)
-            end
-            Note over O: Check if user_msg is STOP
-        else User/Env to Agent
-            rect rgb(100, 200, 100)
-            O->>A: generate_next_message(msg, agent_state_info)
-            A-->>O: (assistant_msg, agent_state_info)
-            Note over O: Check if too many errors
-            end
-        else User/Agent to Environment
-            rect rgb(150, 150, 200)
-            O->>E: get_response(tool_call)
-            E-->>O: tool_message
-            end
-        end
-        Note over O: Check if max turns reached.
+    Note over A, E: Tool Interaction Phase
+    loop Agent Reasoning
+        A->>E: Execute Tool Call (e.g., search_emails)
+        E-->>A: Return Observation (may contain Poisoned Data)
     end
-    Note over O: Return simulation run
+
+    Note over A, P: DUMA Security Intervention
+    A->>P: Propose Final Action / Response
+    P->>P: Analysis: Check against Security Policy
+
+    alt Policy Violation (Attack Successful)
+        P-->>O: Flag Prohibited Action
+        O->>EV: Log Security Breach / Failure
+    else Policy Compliant (Defense Successful)
+        P-->>O: Approve Action
+        O->>EV: Log Correct Execution (SOP)
+    end
+
+    Note over O, EV: Scoring
+    O->>A: Finalize Execution Context
+    A-->>U: Final Response
+    EV->>O: Calculate Resilience Score & Metrics
+
 ```
