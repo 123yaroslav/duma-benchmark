@@ -5,8 +5,6 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
-
-
 <div align="center">
 <img src="figs/overview.png" width="95%" alt="System Overview"><br>
 <em>Figure 1: τ²-bench allows users to interact with the agent and the environment</em>
@@ -19,7 +17,26 @@
 
 ## 🆕 What's New
 
+<div align="center">
+<img src="figs/new_domains.jpg" width="95%" alt="System Overview"><br>
+<em>Figure 3: New domains built on τ²-bench for testing RAG poisoning, multi-agent interactions and output handling vulnerabilities</em>
+</div>
 
+<p align="center">
+  <img src="figs/collab.jpg" width="48%" alt="Multi-agent Collaboration">
+  &nbsp;&nbsp;
+  <img src="figs/output_handling.jpg" width="48%" alt="Output Handling">
+</p>
+<p align="center">
+  <em>Figure 4: Multi-agent interaction domain &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Figure 5: Output handling domain</em>
+</p>
+
+<p align="center">
+  <img src="figs/rag_poisoning.jpg" width="50%" alt="RAG Poisoning">
+</p>
+<p align="center">
+  <em>Figure 6: RAG poisoning domain</em>
+</p>
 
 ## Overview
 
@@ -44,6 +61,8 @@ All the information that an agent developer needs to build an agent for a domain
 ## Authors ([ai-securitylab ITMO](https://github.com/ai-security-lab-itmo))
 * [Aleksandrov Ivan](https://github.com/Ivanich-spb)
 * [Kochnev German](https://github.com/germanKoch)
+* [Rogoza Yaroslav](https://github.com/123yaroslav)
+* [Kalimanova Anastasia](https://github.com/katimanova)
 
 ## Installation
 
@@ -270,6 +289,30 @@ For more details, see the [experiments README](src/experiments/README.md).
 ## Domains
 
 For all the details see the domains [README](src/tau2/domains/README.md).
+
+## Results
+
+
+**Hypothesis 1**: With fixed agent and user temperatures, increasing the number of runs *k* reduces the variance of the pass@k metric, but does not guarantee monotonic change in ASR.
+
+**Hypothesis 2**: Changes in non-attacking user requests cause changes in ASR with fixed agent temperature.
+
+<p align="center">
+  <img src="figs/res_t0_pass1.svg" width="45%"/>
+  <img src="figs/res_t05_pass1.svg" width="45%"/>
+</p>
+<p align="center">
+  <img src="figs/res_t1_pass1.svg" width="45%"/>
+  <img src="figs/res_t0_pass4.svg" width="45%"/>
+</p>
+
+
+**Hypothesis 3**: The GPT-4o model performed better in the RAG-poisoning domain compared to the more expensive GPT-4.1 and Sonnet-4.5, but proved unstable when increasing *k*. GPT-3.5-turbo shows the most stable results when varying T-user.
+
+<p align="center">
+  <img src="figs/pass1.svg" width="45%"/>
+  <img src="figs/pass4.svg" width="45%"/>
+</p>
 
 ### Basics
 
