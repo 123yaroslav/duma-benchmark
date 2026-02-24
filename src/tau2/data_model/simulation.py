@@ -34,7 +34,7 @@ class RunConfig(BaseModel):
         str,
         Field(
             description="The domain to run the simulation on",
-            default="airline",
+            default="collab",
         ),
     ]
     task_set_name: Annotated[
