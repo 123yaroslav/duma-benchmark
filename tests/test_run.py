@@ -265,8 +265,8 @@ def test_run_tasks_env_assertions(domain_name: str, task_with_env_assertions: Ta
     task_with_env_assertions.evaluation_criteria.env_assertions.append(
         EnvAssertion(
             env_type="assistant",
-            func_name="assert_task_status",
-            arguments={"task_id": "task_1", "expected_status": "made_up_status"},
+            func_name="assert_status_is",
+            arguments={"status": "made_up_status"},
         )
     )
     simulation = run_task(
@@ -305,52 +305,6 @@ def test_run_tasks_history_and_env_assertions(
         llm_args_user={},
     )
     assert simulation is not None
-
-
-@pytest.mark.skip(reason="Legacy mock-domain NL assertion test no longer supported")
-def test_run_tasks_nl_assertions(domain_name: str):
-    """Legacy NL assertion coverage test."""
-    task = get_tasks(domain_name, task_ids=["create_task_1_nl_eval"])[0]
-    simulation = run_task(
-        domain=domain_name,
-        task=task,
-        agent="llm_agent",
-        user="user_simulator",
-        llm_agent="gpt-3.5-turbo",
-        llm_args_agent={},
-        llm_user="gpt-3.5-turbo",
-        llm_args_user={},
-        evaluation_type=EvaluationType.NL_ASSERTIONS,
-    )
-    # Check that simulation ran and has expected structure
-    assert simulation.messages is not None
-    assert len(simulation.messages) > 0
-    assert simulation.start_time is not None
-    assert simulation.end_time is not None
-    assert simulation.reward_info.reward == 1.0
-    assert len(simulation.reward_info.nl_assertions) == 2
-    assert simulation.reward_info.nl_assertions[0].met is True
-    assert simulation.reward_info.nl_assertions[1].met is True
-
-    # Add an nl_assertion that will fail and test that the reward is 0.0
-    task.evaluation_criteria.nl_assertions.append("The user is not complimented")
-    simulation = run_task(
-        domain=domain_name,
-        task=task,
-        agent="llm_agent",
-        user="user_simulator",
-        llm_agent="gpt-3.5-turbo",
-        llm_args_agent={},
-        llm_user="gpt-3.5-turbo",
-        llm_args_user={},
-        evaluation_type=EvaluationType.NL_ASSERTIONS,
-    )
-    assert simulation.reward_info.reward == 0.0
-
-    assert len(simulation.reward_info.nl_assertions) == 3
-    assert simulation.reward_info.nl_assertions[0].met is True
-    assert simulation.reward_info.nl_assertions[1].met is True
-    assert simulation.reward_info.nl_assertions[2].met is False
 
 
 @pytest.mark.skipif(
