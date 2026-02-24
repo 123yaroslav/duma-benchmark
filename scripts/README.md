@@ -39,7 +39,7 @@
   --temperatures 0.0 0.5 1.0 \
   --num-trials 10 \
   --max-concurrency 1 \
-  --tau2-max-concurrency 3
+  --duma-max-concurrency 3
 ```
 
 ## Максимальная загрузка (агрессивно)

@@ -34,15 +34,15 @@ try:
 except Exception:
     _RICH_AVAILABLE = False
 
-# Добавить src в путь для импорта tau2
+# Добавить src в путь для импорта duma
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 try:
-    from tau2.utils.utils import DATA_DIR
+    from duma.utils.utils import DATA_DIR
 except ImportError:
     print(
-        "Error: Cannot import tau2. Make sure you're in the project root and tau2 is installed."
+        "Error: Cannot import duma. Make sure you're in the project root and duma is installed."
     )
     sys.exit(1)
 
@@ -128,7 +128,7 @@ def find_missing_results(
     temperatures: List[float],
     domains: dict,
     num_trials: int,
-    tau2_max_concurrency: int,
+    duma_max_concurrency: int,
     results_dir: Path,
     project_root: Path,
 ) -> List[Tuple[List[str], Path]]:
@@ -143,9 +143,9 @@ def find_missing_results(
     def get_all_tasks_for_domain(domain_name: str) -> List[str]:
         """Загрузить все задачи домена из tasks.json."""
         possible_paths = [
-            DATA_DIR / "tau2" / "domains" / domain_name / "tasks.json",
+            DATA_DIR / "duma" / "domains" / domain_name / "tasks.json",
             DATA_DIR / "domains" / domain_name / "tasks.json",
-            Path("data/tau2/domains") / domain_name / "tasks.json",
+            Path("data/duma/domains") / domain_name / "tasks.json",
         ]
 
         for path in possible_paths:
@@ -283,7 +283,7 @@ def find_missing_results(
                         cmd = [
                             python_exe,
                             "-m",
-                            "tau2.cli",
+                            "duma.cli",
                             "run",
                             "--domain",
                             domain,
@@ -300,7 +300,7 @@ def find_missing_results(
                             "--save-to",
                             file_name,
                             "--max-concurrency",
-                            str(tau2_max_concurrency),
+                            str(duma_max_concurrency),
                         ]
                         missing.append((cmd, output_file))
 
@@ -340,7 +340,7 @@ def run_single_experiment(
                 cwd=str(project_root),
             )
 
-            # tau2 может запросить интерактивное подтверждение resume, если save_to уже существует.
+            # duma может запросить интерактивное подтверждение resume, если save_to уже существует.
             # В неинтерактивном запуске это выглядит как "зависание". Автоматически отвечаем "y".
             resume_input = "y\n" * 5
 
@@ -532,16 +532,16 @@ def main():
         help="Максимальное количество параллельных запусков (рекомендуется 1 для избежания rate limits, 2-3 только если есть высокие лимиты API)",
     )
     parser.add_argument(
-        "--tau2-max-concurrency",
+        "--duma-max-concurrency",
         type=int,
         default=1,
-        help="Внутренняя параллельность tau2 внутри одного эксперимента (параллельные trial'ы).",
+        help="Внутренняя параллельность duma внутри одного эксперимента (параллельные trial'ы).",
     )
     parser.add_argument(
         "--process-timeout-seconds",
         type=int,
         default=3600,
-        help="Таймаут на один запуск tau2 run (сек).",
+        help="Таймаут на один запуск duma run (сек).",
     )
     parser.add_argument(
         "--force-rerun",
@@ -607,7 +607,7 @@ def main():
             args.temperatures,
             tasks_by_domain,
             args.num_trials,
-            args.tau2_max_concurrency,
+            args.duma_max_concurrency,
             DATA_DIR / "simulations",
             project_root,
         )
@@ -659,7 +659,7 @@ def main():
         f"🚀 Starting {len(commands)} experiments with max_concurrency={args.max_concurrency}..."
     )
     print(
-        f"   ⚙️  tau2 internal max_concurrency per experiment: {args.tau2_max_concurrency}"
+        f"   ⚙️  duma internal max_concurrency per experiment: {args.duma_max_concurrency}"
     )
     print(f"   ⏱️  Process timeout per experiment: {args.process_timeout_seconds}s")
     print(

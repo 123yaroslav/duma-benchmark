@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to run tau2 benchmarks with multiple parameter configurations in parallel.
+Script to run duma benchmarks with multiple parameter configurations in parallel.
 
 This script allows you to define a list of test cases with different LLM configurations
 and runs them in parallel, generating separate simulation files for each case.
@@ -61,7 +61,7 @@ def run_single_benchmark(
     Args:
         case: BenchmarkCase configuration
         domains: List of domain names to run
-        base_args: Base arguments for tau2 run command
+        base_args: Base arguments for duma run command
         output_dir: Directory to save results
         
     Returns:
@@ -71,7 +71,7 @@ def run_single_benchmark(
 
     # Build command
     cmd = [
-        sys.executable, "-m", "tau2.cli", "run",
+        sys.executable, "-m", "duma.cli", "run",
         "--domains", *domains,
         "--agent-llm", case.agent_llm,
         "--user-llm", case.user_llm,
@@ -137,7 +137,7 @@ def run_benchmark_suite(
     Args:
         cases: List of BenchmarkCase configurations
         domains: List of domain names to run
-        base_args: Base arguments for tau2 run command
+        base_args: Base arguments for duma run command
         max_workers: Maximum number of parallel processes
         output_dir: Directory to save results (default: data/simulations)
         
@@ -145,7 +145,7 @@ def run_benchmark_suite(
         Dictionary mapping case names to (success, output_file) tuples
     """
     if output_dir is None:
-        from tau2.utils.utils import DATA_DIR
+        from duma.utils.utils import DATA_DIR
         output_dir = DATA_DIR / "simulations"
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -217,7 +217,7 @@ def print_results_summary(results: dict, console: Console):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run tau2 benchmarks with multiple configurations in parallel"
+        description="Run duma benchmarks with multiple configurations in parallel"
     )
     parser.add_argument(
         "--config",
@@ -234,7 +234,7 @@ def main():
     parser.add_argument(
         "--output-dir",
         type=str,
-        help="Directory to save results (default: data/tau2/simulations)",
+        help="Directory to save results (default: data/duma/simulations)",
     )
 
     args = parser.parse_args()
@@ -280,7 +280,7 @@ def main():
         try:
             # Ensure output_dir has a value (use same default as run_benchmark_suite)
             if output_dir is None:
-                from tau2.utils.utils import DATA_DIR
+                from duma.utils.utils import DATA_DIR
                 output_dir = DATA_DIR / "simulations"
             df = generate_metrics_table(successful_files)
             if not df.empty:

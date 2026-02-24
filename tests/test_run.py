@@ -4,15 +4,15 @@ from copy import deepcopy
 
 import pytest
 
-from tau2.config import (
+from duma.config import (
     DEFAULT_LLM_AGENT,
     DEFAULT_LLM_ARGS_AGENT,
     DEFAULT_LLM_ARGS_USER,
     DEFAULT_LLM_USER,
 )
-from tau2.data_model.simulation import RunConfig
-from tau2.data_model.tasks import EnvAssertion, RewardType, Task, make_task
-from tau2.run import (
+from duma.data_model.simulation import RunConfig
+from duma.data_model.tasks import EnvAssertion, RewardType, Task, make_task
+from duma.run import (
     EvaluationType,
     get_options,
     get_tasks,
@@ -22,8 +22,8 @@ from tau2.run import (
     run_tasks,
 )
 
-STRICT_LLM_TESTS = os.environ.get("TAU2_STRICT_LLM_TESTS") == "1"
-LIVE_LLM_TESTS = os.environ.get("TAU2_LIVE_LLM_TESTS") == "1"
+STRICT_LLM_TESTS = os.environ.get("DUMA_STRICT_LLM_TESTS") == "1"
+LIVE_LLM_TESTS = os.environ.get("DUMA_LIVE_LLM_TESTS") == "1"
 
 
 @pytest.fixture
@@ -87,7 +87,7 @@ def test_get_tasks():
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_simplified_run(domain_name: str):
     """Test that we can run a task with a registered domain."""
@@ -124,7 +124,7 @@ def test_simplified_run(domain_name: str):
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_base(domain_name: str, base_task: Task):
     """Test running a task with a registered domain."""
@@ -150,7 +150,7 @@ def test_run_tasks_base(domain_name: str, base_task: Task):
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_task_base(domain_name: str, base_task: Task):
     """Test running a task with a registered domain."""
@@ -174,7 +174,7 @@ def test_run_task_base(domain_name: str, base_task: Task):
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_message_history(domain_name: str, task_with_message_history: Task):
     """Test running a task with message history"""
@@ -193,7 +193,7 @@ def test_run_tasks_message_history(domain_name: str, task_with_message_history: 
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_initialization_data(
     domain_name: str, task_with_initialization_data: Task
@@ -213,7 +213,7 @@ def test_run_tasks_initialization_data(
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_initialization_actions(
     domain_name: str, task_with_initialization_actions: Task
@@ -233,7 +233,7 @@ def test_run_tasks_initialization_actions(
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_env_assertions(domain_name: str, task_with_env_assertions: Task):
     """Test running a task with env assertions"""
@@ -288,7 +288,7 @@ def test_run_tasks_env_assertions(domain_name: str, task_with_env_assertions: Ta
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_history_and_env_assertions(
     domain_name: str, task_with_history_and_env_assertions: Task
@@ -354,7 +354,7 @@ def test_run_tasks_nl_assertions(domain_name: str):
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_action_checks(domain_name: str, task_with_action_checks: Task):
     """Test running a task with action checks"""
@@ -382,7 +382,7 @@ def test_run_tasks_action_checks(domain_name: str, task_with_action_checks: Task
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_domain(run_config: RunConfig):
     """Test running a configured domain.
@@ -393,7 +393,7 @@ def test_run_domain(run_config: RunConfig):
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_gt_agent(domain_name: str, base_task: Task):
     """Test running gt agent"""
@@ -411,7 +411,7 @@ def test_run_gt_agent(domain_name: str, base_task: Task):
 
 
 @pytest.mark.skipif(
-    not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
+    not LIVE_LLM_TESTS, reason="Requires live LLM access (set DUMA_LIVE_LLM_TESTS=1)"
 )
 def test_run_solo_agent(domain_name: str, base_task: Task):
     """Test running solo agent"""

@@ -17,8 +17,8 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-from tau2.data_model.simulation import MultiDomainResults, Results
-from tau2.metrics.agent_metrics import is_successful
+from duma.data_model.simulation import MultiDomainResults, Results
+from duma.metrics.agent_metrics import is_successful
 
 # Import statistical functions
 # Note: result_collection is in the same directory

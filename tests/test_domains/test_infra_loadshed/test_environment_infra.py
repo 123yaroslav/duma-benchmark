@@ -1,5 +1,5 @@
-from tau2.domains.infra_loadshed.environment import get_environment, get_tasks
-from tau2.domains.infra_loadshed.tools import InfraTools
+from duma.domains.infra_loadshed.environment import get_environment, get_tasks
+from duma.domains.infra_loadshed.tools import InfraTools
 
 
 def test_environment_returns_infra_tools():

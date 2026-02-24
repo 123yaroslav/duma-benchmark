@@ -23,10 +23,10 @@ make lint-fix          # Auto-fix lint issues
 make check-all         # Both lint and format
 
 # CLI usage
-tau2 run --domain collab --agent-llm gpt-4o-mini --num-tasks 5
-tau2 view              # Interactive results browser
-tau2 domain collab     # Start API server + view docs
-tau2 check-data        # Verify data directory setup
+duma run --domain collab --agent-llm gpt-4o-mini --num-tasks 5
+duma view              # Interactive results browser
+duma domain collab     # Start API server + view docs
+duma check-data        # Verify data directory setup
 ```
 
 ## Architecture
@@ -45,29 +45,29 @@ CLI (cli.py) → run.py → Orchestrator
                Evaluator pipeline → Metrics
 ```
 
-**Orchestrator** (`src/tau2/orchestrator/orchestrator.py`): Manages the message passing loop between agent, user, and environment until task completion or max steps.
+**Orchestrator** (`src/duma/orchestrator/orchestrator.py`): Manages the message passing loop between agent, user, and environment until task completion or max steps.
 
-**Registry** (`src/tau2/registry.py`): Maps domain/agent/user names to their implementations. All components are registered here.
+**Registry** (`src/duma/registry.py`): Maps domain/agent/user names to their implementations. All components are registered here.
 
 ### Key Components
 
 | Module | Purpose |
 |--------|---------|
-| `src/tau2/agent/llm_agent.py` | LLM agent using LiteLLM for multi-provider support |
-| `src/tau2/user/user_simulator.py` | LLM-based user that follows task persona |
-| `src/tau2/environment/environment.py` | Holds domain policy, tools, and state |
-| `src/tau2/evaluator/` | Multi-stage evaluation (action, env, communication, output) |
-| `src/tau2/config.py` | Default LLM models, simulation limits, caching settings |
+| `src/duma/agent/llm_agent.py` | LLM agent using LiteLLM for multi-provider support |
+| `src/duma/user/user_simulator.py` | LLM-based user that follows task persona |
+| `src/duma/environment/environment.py` | Holds domain policy, tools, and state |
+| `src/duma/evaluator/` | Multi-stage evaluation (action, env, communication, output) |
+| `src/duma/config.py` | Default LLM models, simulation limits, caching settings |
 
 ### Domain Structure
 
-Each domain in `src/tau2/domains/{domain}/` follows this pattern:
+Each domain in `src/duma/domains/{domain}/` follows this pattern:
 - `data_model.py`: Pydantic models for domain state
 - `tools.py`: ToolKit subclass with `@is_tool()` decorated methods
 - `environment.py`: Factory functions `get_environment()` and `get_tasks()`
 - `user_tools.py` (optional): User-only tools
 
-Corresponding data in `data/tau2/domains/{domain}/`:
+Corresponding data in `data/duma/domains/{domain}/`:
 - `policy.md`: Rules the agent must follow
 - `tasks.json`: Task definitions with user scenarios and evaluation criteria
 - `db.json` or `db.toml`: Initial domain state
@@ -84,7 +84,7 @@ Task passes when reward ≥ 0.999999. Pass^k metric measures success probability
 
 ## Data Model
 
-Key Pydantic models in `src/tau2/data_model/`:
+Key Pydantic models in `src/duma/data_model/`:
 - `RunConfig`: Simulation configuration (domains, LLMs, parallelism)
 - `SimulationRun`: Single task trial with messages and reward
 - `Task`: User scenario + evaluation criteria
@@ -99,15 +99,15 @@ Copy `.env.example` to `.env` and configure:
 
 ## Adding a New Domain
 
-1. Create `src/tau2/domains/my_domain/` with `data_model.py`, `tools.py`, `environment.py`
-2. Add data files to `data/tau2/domains/my_domain/`
-3. Register in `src/tau2/registry.py`
+1. Create `src/duma/domains/my_domain/` with `data_model.py`, `tools.py`, `environment.py`
+2. Add data files to `data/duma/domains/my_domain/`
+3. Register in `src/duma/registry.py`
 4. Add tests to `tests/test_domains/my_domain/`
 
 ## Leaderboard Submission
 
 ```bash
-tau2 submit prepare data/tau2/simulations/*.json --output ./submission
-tau2 submit validate ./submission
+duma submit prepare data/duma/simulations/*.json --output ./submission
+duma submit validate ./submission
 ```
 Requires results from all 6 core domains. Submit via PR to `web/leaderboard/public/submissions/`.

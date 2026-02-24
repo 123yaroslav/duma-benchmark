@@ -1,5 +1,5 @@
-from tau2.domains.collab.environment import get_environment, get_tasks
-from tau2.domains.collab.tools import CollabTools
+from duma.domains.collab.environment import get_environment, get_tasks
+from duma.domains.collab.tools import CollabTools
 
 
 def test_environment_provides_collab_tools():

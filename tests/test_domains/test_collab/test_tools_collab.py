@@ -1,6 +1,6 @@
-from tau2.domains.collab.data_model import CollabDB
-from tau2.domains.collab.tools import CollabTools
-from tau2.domains.collab.utils import COLLAB_DB_PATH
+from duma.domains.collab.data_model import CollabDB
+from duma.domains.collab.tools import CollabTools
+from duma.domains.collab.utils import COLLAB_DB_PATH
 
 
 def _fresh_db() -> CollabDB:

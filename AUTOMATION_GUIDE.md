@@ -89,7 +89,7 @@ The workflow is configured in `.github/workflows/release.yml`:
 ```yaml
 # Key configuration options
 release-type: python          # Python project type
-package-name: tau2           # Your package name
+package-name: duma           # Your package name
 version-file: pyproject.toml # Version location
 include-v-in-tag: true      # Creates v1.0.0 tags
 ```
@@ -208,7 +208,7 @@ git log --oneline -10
 npx commitizen init cz-conventional-changelog --save-dev --save-exact
 
 # Test release please locally (requires npx)
-npx release-please release-pr --repo-url=https://github.com/your-org/tau2-bench
+npx release-please release-pr --repo-url=https://github.com/your-org/duma-bench
 ```
 
 ## Advanced Configuration
@@ -230,7 +230,7 @@ Create `release-please-config.json`:
   "release-type": "python",
   "packages": {
     ".": {
-      "package-name": "tau2",
+      "package-name": "duma",
       "changelog-sections": [
         {"type": "feat", "section": "Features"},
         {"type": "fix", "section": "Bug Fixes"},
@@ -248,9 +248,9 @@ For projects with multiple packages:
 ```json
 {
   "packages": {
-    "packages/core": {"package-name": "tau2-core"},
-    "packages/cli": {"package-name": "tau2-cli"},
-    "packages/web": {"package-name": "tau2-web"}
+    "packages/core": {"package-name": "duma-core"},
+    "packages/cli": {"package-name": "duma-cli"},
+    "packages/web": {"package-name": "duma-web"}
   }
 }
 ```

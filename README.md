@@ -66,12 +66,12 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-This will enable you to run the `tau2` command.
+This will enable you to run the `duma` command.
 
-**Note:** If you use `pip install .` (without `-e`), you'll need to set the `TAU2_DATA_DIR` environment variable to point to your data directory:
+**Note:** If you use `pip install .` (without `-e`), you'll need to set the `DUMA_DATA_DIR` environment variable to point to your data directory:
 
 ```bash
-export TAU2_DATA_DIR=/path/to/your/tau2-bench/data
+export DUMA_DATA_DIR=/path/to/your/duma-bench/data
 ```
 
 **Check your data directory setup:**
@@ -79,7 +79,7 @@ export TAU2_DATA_DIR=/path/to/your/tau2-bench/data
 After installation, you can verify that your data directory is correctly configured by running:
 
 ```bash
-tau2 check-data
+duma check-data
 ```
 
 This command will check if the data directory exists and print instructions if it is missing.
@@ -102,7 +102,7 @@ To provide your API keys, copy `.env.example` as `.env` and edit it to include y
 To run a test evaluation on only 5 tasks with 1 trial per task, run:
 
 ```bash
-tau2 run \ 
+duma run \ 
 --domain collab \
 --agent-llm gpt-4.1 \
 --user-llm gpt-4.1 \
@@ -110,15 +110,15 @@ tau2 run \
 --num-tasks 5
 ```
 
-Results will be saved in `data/tau2/simulations/`.
+Results will be saved in `data/duma/simulations/`.
 
 ## Command Line Interface
 
-The `tau2` command provides a unified interface for all functionality:
+The `duma` command provides a unified interface for all functionality:
 
 ### Running Benchmark 
 ```bash
-tau2 run \
+duma run \
   --domain <domain> \
   --agent-llm <llm_name> \
   --user-llm <llm_name> \
@@ -130,23 +130,23 @@ tau2 run \
 
 ### Viewing Results
 ```bash
-tau2 view
+duma view
 ```
 This tool allows you to:
-- Browse simulation files (in `data/tau2/simulations/`)
+- Browse simulation files (in `data/duma/simulations/`)
 - View agent performance metrics
 - View a particular simulation
 - View task details
 
 ### View domain documentation
 ```bash
-tau2 domain <domain>
+duma domain <domain>
 ```
 Visit http://127.0.0.1:8004/redoc to see the domain policy and API documentation.
 
 ### Run multiple domains with custom endpoints
 ```bash
-tau2 run \
+duma run \
   --domains collab infra_loadshed output_handling \
   --agent-llm gpt-4o-mini \
   --user-llm gpt-4o-mini \
@@ -160,7 +160,7 @@ Use `--local-models` to skip API keys for local providers, and `--user-base-url`
 
 ### Check data configuration
 ```bash
-tau2 check-data
+duma check-data
 ```
 This command checks if your data directory is properly configured and all required files are present.
 
@@ -168,7 +168,7 @@ This command checks if your data directory is properly configured and all requir
 
 ### Experimental Code Directory
 
-The `@experiments/` directory contains experimental features and research code that extends beyond the core tau2 benchmark. This directory is designed for community contributions of innovative approaches, prototypes, and new features that are not part of the core evaluation framework.
+The `@experiments/` directory contains experimental features and research code that extends beyond the core duma benchmark. This directory is designed for community contributions of innovative approaches, prototypes, and new features that are not part of the core evaluation framework.
 
 - **Purpose**: Research code and experimental features
 - **Location**: `src/experiments/`
@@ -179,7 +179,7 @@ For more details, see the [experiments README](src/experiments/README.md).
 
 ## Domains
 
-For all the details see the domains [README](src/tau2/domains/README.md).
+For all the details see the domains [README](src/duma/domains/README.md).
 
 ## Results
 
@@ -207,14 +207,14 @@ For all the details see the domains [README](src/tau2/domains/README.md).
 
 ### Basics
 
-- Code is located in `src/tau2/domains/`
-- Data is located in `data/tau2/domains/`
+- Code is located in `src/duma/domains/`
+- Data is located in `data/duma/domains/`
 - Each domain has its own configuration and task definitions
 
 #### View domain-specific policy and API docs:
 Run the following command to see the domain policy and API documentation.
 ```bash
-tau2 domain <domain>
+duma domain <domain>
 ```
 
 Then visit http://127.0.0.1:8004/redoc
@@ -264,7 +264,7 @@ make test
 
 ## Config
 
-To configure the framework, see the [config](src/tau2/config.py) file.
+To configure the framework, see the [config](src/duma/config.py) file.
 
 ### LLM Calls caching
 LLM call caching is disabled by default.
@@ -276,7 +276,7 @@ To enable LLM calls caching:
 
 
 ## Evaluate Your Own Agent
-For local or remote agent evaluation, see our [agent developer guide](src/tau2/agent/README.md).
+For local or remote agent evaluation, see our [agent developer guide](src/duma/agent/README.md).
 
 ## Contributing
 

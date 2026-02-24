@@ -1,6 +1,6 @@
-from tau2.domains.infra_loadshed.data_model import InfraDB
-from tau2.domains.infra_loadshed.tools import InfraTools
-from tau2.domains.infra_loadshed.utils import INFRA_DB_PATH
+from duma.domains.infra_loadshed.data_model import InfraDB
+from duma.domains.infra_loadshed.tools import InfraTools
+from duma.domains.infra_loadshed.utils import INFRA_DB_PATH
 
 
 def _fresh_db() -> InfraDB:

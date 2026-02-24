@@ -21,7 +21,7 @@ test:
 ## Start the Environment CLI for interacting with domain environments
 .PHONY: env-cli
 env-cli:
-	python -m tau2.environment.utils.interface_agent
+	python -m duma.environment.utils.interface_agent
 
 ## Lint code with ruff
 .PHONY: lint

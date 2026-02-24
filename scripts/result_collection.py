@@ -15,8 +15,8 @@ import pandas as pd
 from scipy import stats
 from scipy.stats import binom
 
-from tau2.data_model.simulation import MultiDomainResults, Results
-from tau2.metrics.agent_metrics import is_successful, pass_hat_k
+from duma.data_model.simulation import MultiDomainResults, Results
+from duma.metrics.agent_metrics import is_successful, pass_hat_k
 
 
 def _normalize_model_name(model: str | None) -> str:

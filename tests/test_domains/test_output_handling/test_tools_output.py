@@ -1,6 +1,6 @@
-from tau2.domains.output_handling.data_model import OutputDB
-from tau2.domains.output_handling.tools import OutputTools
-from tau2.domains.output_handling.utils import OUTPUT_DB_PATH
+from duma.domains.output_handling.data_model import OutputDB
+from duma.domains.output_handling.tools import OutputTools
+from duma.domains.output_handling.utils import OUTPUT_DB_PATH
 
 
 def _fresh_db() -> OutputDB:

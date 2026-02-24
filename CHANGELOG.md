@@ -51,8 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.2] - 2025-07-17
 
 ### Added
-- `tau2 check-data` CLI command for verifying data directory setup
-- Support for `TAU2_DATA_DIR` environment variable for non-editable installs
+- `duma check-data` CLI command for verifying data directory setup
+- Support for `DUMA_DATA_DIR` environment variable for non-editable installs
 - Fallback to local source when data directory is not set
 - `--num-tasks` CLI flag for limiting task count
 
@@ -69,14 +69,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Domain viewer CLI functionality
-- `tau2 domain` command execution issues
+- `duma domain` command execution issues
 
 ## [0.1.0] - 2025-06-12
 
 ### Added
 - Initial release of τ²-bench framework
 - Support for multiple domains: mock, airline, retail, telecom
-- Command-line interface with `tau2` command
+- Command-line interface with `duma` command
 - Agent evaluation system with LLM integration via LiteLLM
 - User simulator for realistic conversation scenarios
 - Environment system with domain-specific tools and policies
@@ -100,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Semantic versioning adoption
 
 ## Links
-- [Repository](https://github.com/sierra-research/tau2-bench)
+- [Repository](https://github.com/sierra-research/duma-bench)
 - [Leaderboard](https://tau-bench.com)
 - [Paper](https://arxiv.org/abs/2506.07982)
 - [Blog Post](https://sierra.ai/blog/benchmarking-agents-in-collaborative-real-world-scenarios)

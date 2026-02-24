@@ -20,8 +20,8 @@
 
 Как запускать:  
 ```bash
-tau2 run --domain collab --agent-llm gpt-4o-mini --user-llm gpt-4o-mini --num-tasks 2 --num-trials 1
-tau2 run --domain infra_loadshed --agent-llm gpt-4o-mini --user-llm gpt-4o-mini --num-tasks 3 --num-trials 1
+duma run --domain collab --agent-llm gpt-4o-mini --user-llm gpt-4o-mini --num-tasks 2 --num-trials 1
+duma run --domain infra_loadshed --agent-llm gpt-4o-mini --user-llm gpt-4o-mini --num-tasks 3 --num-trials 1
 ```
 
 # Improper Output Handling (некорректная обработка выводов)
@@ -34,6 +34,6 @@ tau2 run --domain infra_loadshed --agent-llm gpt-4o-mini --user-llm gpt-4o-mini 
 
 Запуск:  
 ```bash
-tau2 run --domain output_handling --agent-llm gpt-4o-mini --user-llm gpt-4o-mini --num-tasks 3 --num-trials 1
+duma run --domain output_handling --agent-llm gpt-4o-mini --user-llm gpt-4o-mini --num-tasks 3 --num-trials 1
 ```
 

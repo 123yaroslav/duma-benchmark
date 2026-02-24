@@ -36,7 +36,7 @@ try:
 except ImportError:
     HAS_TQDM = False
 
-# Add project root and src to path to import tau2 (must be before importing result_collection)
+# Add project root and src to path to import duma (must be before importing result_collection)
 project_root = Path(__file__).parent.parent
 src_dir = project_root / "src"
 if str(src_dir) not in sys.path:
@@ -150,9 +150,9 @@ def run_all_experiments(
     Returns:
         Path to results directory
     """
-    # tau2 сохраняет файлы в data/tau2/simulations/ автоматически
+    # duma сохраняет файлы в data/duma/simulations/ автоматически
     # --save-to принимает имя файла БЕЗ расширения
-    from tau2.utils.utils import DATA_DIR
+    from duma.utils.utils import DATA_DIR
 
     actual_output_dir = DATA_DIR / "simulations"
     actual_output_dir.mkdir(parents=True, exist_ok=True)
@@ -163,15 +163,15 @@ def run_all_experiments(
         # Проверяем несколько возможных путей (правильный путь первым)
         possible_paths = [
             DATA_DIR
-            / "tau2"
+            / "duma"
             / "domains"
             / domain_name
             / "tasks.json",  # Правильный путь
             DATA_DIR / "domains" / domain_name / "tasks.json",
-            Path("data/tau2/domains") / domain_name / "tasks.json",
+            Path("data/duma/domains") / domain_name / "tasks.json",
             Path(__file__).parent.parent
             / "data"
-            / "tau2"
+            / "duma"
             / "domains"
             / domain_name
             / "tasks.json",
@@ -223,7 +223,7 @@ def run_all_experiments(
                         print(f"Loaded {len(tasks)} tasks for domain {domain}")
 
                 for task in tasks:
-                    # Формируем имя файла без расширения (tau2 добавит .json автоматически)
+                    # Формируем имя файла без расширения (duma добавит .json автоматически)
                     model_id = _model_id_for_results(model)
                     file_name = f"paper_results_{domain}_{_sanitize_model_for_filename(model_id)}_T{temp}_{task}"
                     # Фактический путь к файлу результата
@@ -231,7 +231,7 @@ def run_all_experiments(
 
                     # Формируем команду точно как в README
                     cmd = [
-                        "tau2",
+                        "duma",
                         "run",
                         "--domain",
                         domain,
@@ -371,13 +371,13 @@ def run_all_experiments(
 
     # Запустить команды параллельно
     # Используем max_concurrency для ограничения параллельности
-    # Проверим, что tau2 доступен (только при первом запуске)
+    # Проверим, что duma доступен (только при первом запуске)
     if commands:
-        tau2_path = shutil.which("tau2")
-        if not tau2_path:
+        duma_path = shutil.which("duma")
+        if not duma_path:
             raise FileNotFoundError(
-                "tau2 command not found in PATH. "
-                "Make sure tau2 is installed: pip install -e ."
+                "duma command not found in PATH. "
+                "Make sure duma is installed: pip install -e ."
             )
 
     # Подготовить данные для параллельного выполнения
@@ -580,7 +580,7 @@ def process_all_results(
         # Попробуем показать структуру одного файла для отладки
         if result_files:
             try:
-                from tau2.data_model.simulation import Results
+                from duma.data_model.simulation import Results
 
                 sample = Results.load(result_files[0])
                 print(f"\n   Sample file structure:")
@@ -1370,7 +1370,7 @@ def main():
         "--results-dir",
         type=Path,
         default=None,
-        help="Директория для поиска результатов (по умолчанию data/tau2/simulations/)",
+        help="Директория для поиска результатов (по умолчанию data/duma/simulations/)",
     )
     parser.add_argument(
         "--template-path",
@@ -1415,7 +1415,7 @@ def main():
     print("=" * 80)
     # Определить директорию с результатами
     if args.results_dir is None:
-        from tau2.utils.utils import DATA_DIR
+        from duma.utils.utils import DATA_DIR
 
         results_dir = DATA_DIR / "simulations"
     else:
@@ -1427,9 +1427,9 @@ def main():
     # - не смешивать результаты с другими запусками
     def get_all_tasks_for_domain(domain_name: str) -> List[str]:
         possible_paths = [
-            results_dir.parent / "tau2" / "domains" / domain_name / "tasks.json",
+            results_dir.parent / "duma" / "domains" / domain_name / "tasks.json",
             results_dir.parent / "domains" / domain_name / "tasks.json",
-            Path("data/tau2/domains") / domain_name / "tasks.json",
+            Path("data/duma/domains") / domain_name / "tasks.json",
         ]
         for path in possible_paths:
             if path.exists():

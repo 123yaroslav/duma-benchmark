@@ -24,13 +24,13 @@ TEMPS=("0.0" "0.5" "1.0")
 NUM_TRIALS="10"
 
 # Aggressive starting point.
-# Approx total parallel simulations ~= MAX_CONCURRENCY * TAU2_MAX_CONCURRENCY
-MAX_CONCURRENCY="4"        # parallel tau2 run processes
-TAU2_MAX_CONCURRENCY="4"   # parallel trials inside one tau2 run
-PROCESS_TIMEOUT_SECONDS="14400"  # 4h per tau2 run
+# Approx total parallel simulations ~= MAX_CONCURRENCY * DUMA_MAX_CONCURRENCY
+MAX_CONCURRENCY="4"        # parallel duma run processes
+DUMA_MAX_CONCURRENCY="4"   # parallel trials inside one duma run
+PROCESS_TIMEOUT_SECONDS="14400"  # 4h per duma run
 
 MIN_MAX_CONCURRENCY="1"
-MIN_TAU2_MAX_CONCURRENCY="1"
+MIN_DUMA_MAX_CONCURRENCY="1"
 
 mkdir -p logs
 RUN_LOG="logs/max_load_retry_$(date +%Y%m%d_%H%M%S).log"
@@ -40,10 +40,10 @@ log() {
 }
 
 log "Logging to: ${RUN_LOG}"
-log "Start: max_concurrency=${MAX_CONCURRENCY}, tau2_max_concurrency=${TAU2_MAX_CONCURRENCY}"
+log "Start: max_concurrency=${MAX_CONCURRENCY}, duma_max_concurrency=${DUMA_MAX_CONCURRENCY}"
 
 while true; do
-  log "== Running with max_concurrency=${MAX_CONCURRENCY} tau2_max_concurrency=${TAU2_MAX_CONCURRENCY} =="
+  log "== Running with max_concurrency=${MAX_CONCURRENCY} duma_max_concurrency=${DUMA_MAX_CONCURRENCY} =="
 
   set +e
 
@@ -55,7 +55,7 @@ while true; do
       --temperatures "${TEMPS[@]}" \
       --num-trials "${NUM_TRIALS}" \
       --max-concurrency "${MAX_CONCURRENCY}" \
-      --tau2-max-concurrency "${TAU2_MAX_CONCURRENCY}" \
+      --duma-max-concurrency "${DUMA_MAX_CONCURRENCY}" \
       --process-timeout-seconds "${PROCESS_TIMEOUT_SECONDS}" \
     2>&1 | tee -a "${RUN_LOG}"
 
@@ -78,8 +78,8 @@ while true; do
     log "Rate limit detected -> backing off"
 
     # Prefer reducing internal concurrency first.
-    if [ "${TAU2_MAX_CONCURRENCY}" -gt "${MIN_TAU2_MAX_CONCURRENCY}" ]; then
-      TAU2_MAX_CONCURRENCY=$((TAU2_MAX_CONCURRENCY - 1))
+    if [ "${DUMA_MAX_CONCURRENCY}" -gt "${MIN_DUMA_MAX_CONCURRENCY}" ]; then
+      DUMA_MAX_CONCURRENCY=$((DUMA_MAX_CONCURRENCY - 1))
       continue
     fi
 
@@ -96,8 +96,8 @@ while true; do
   # If timeouts recorded by our retry script, also back off a bit.
   if [ -f retry_errors.log ] && rg -qi "TIMEOUT" retry_errors.log; then
     log "Timeouts detected -> backing off"
-    if [ "${TAU2_MAX_CONCURRENCY}" -gt "${MIN_TAU2_MAX_CONCURRENCY}" ]; then
-      TAU2_MAX_CONCURRENCY=$((TAU2_MAX_CONCURRENCY - 1))
+    if [ "${DUMA_MAX_CONCURRENCY}" -gt "${MIN_DUMA_MAX_CONCURRENCY}" ]; then
+      DUMA_MAX_CONCURRENCY=$((DUMA_MAX_CONCURRENCY - 1))
     elif [ "${MAX_CONCURRENCY}" -gt "${MIN_MAX_CONCURRENCY}" ]; then
       MAX_CONCURRENCY=$((MAX_CONCURRENCY - 1))
     fi

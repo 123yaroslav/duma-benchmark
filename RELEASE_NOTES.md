@@ -52,15 +52,15 @@ Ready to showcase your agent? Our submission system makes it easy:
 
 ```bash
 # Run complete evaluation on all domains
-tau2 run --domain retail --agent-llm your-model --user-llm gpt-4 --num-trials 4
-tau2 run --domain airline --agent-llm your-model --user-llm gpt-4 --num-trials 4  
-tau2 run --domain telecom --agent-llm your-model --user-llm gpt-4 --num-trials 4
+duma run --domain retail --agent-llm your-model --user-llm gpt-4 --num-trials 4
+duma run --domain airline --agent-llm your-model --user-llm gpt-4 --num-trials 4  
+duma run --domain telecom --agent-llm your-model --user-llm gpt-4 --num-trials 4
 
 # Prepare submission
-tau2 submit prepare data/tau2/simulations/your_results*.json --output ./my_submission
+duma submit prepare data/duma/simulations/your_results*.json --output ./my_submission
 
 # Validate before submitting
-tau2 submit validate ./my_submission
+duma submit validate ./my_submission
 ```
 
 ### ⚡ Performance & Reliability
@@ -109,17 +109,17 @@ This release focuses on making τ²-bench easier to install and configure for ev
 
 #### New Installation Features
 - **Default editable install**: `pip install -e .` is now the recommended method
-- **Flexible data directory**: Set `TAU2_DATA_DIR` for custom installations
+- **Flexible data directory**: Set `DUMA_DATA_DIR` for custom installations
 - **Smart fallbacks**: Automatic detection of data directory location
-- **Installation verification**: New `tau2 check-data` command
+- **Installation verification**: New `duma check-data` command
 
 #### Enhanced CLI Experience
 ```bash
 # Verify your installation
-tau2 check-data
+duma check-data
 
 # Control task count more precisely
-tau2 run --domain airline --num-tasks 10 --agent-llm gpt-4
+duma run --domain airline --num-tasks 10 --agent-llm gpt-4
 ```
 
 #### Developer Experience
@@ -130,7 +130,7 @@ tau2 run --domain airline --num-tasks 10 --agent-llm gpt-4
 ### 🚀 Migration Guide
 If you have an existing installation:
 1. Reinstall with `pip install -e .`
-2. Run `tau2 check-data` to verify setup
+2. Run `duma check-data` to verify setup
 3. Remove any manual data directory configurations (now automatic)
 
 ---
@@ -142,7 +142,7 @@ If you have an existing installation:
 ### 🐛 Domain Viewer Fix
 
 Fixed critical issues with the domain documentation viewer:
-- `tau2 domain <domain>` now works correctly
+- `duma domain <domain>` now works correctly
 - Resolved CLI command execution problems
 - Improved error handling for domain-specific operations
 
@@ -166,7 +166,7 @@ Fixed critical issues with the domain documentation viewer:
 #### Easy-to-Use Command Line Interface
 ```bash
 # Run your first evaluation in minutes
-tau2 run --domain airline --agent-llm gpt-4 --user-llm gpt-4 --num-trials 1 --num-tasks 5
+duma run --domain airline --agent-llm gpt-4 --user-llm gpt-4 --num-trials 1 --num-tasks 5
 ```
 
 #### Dual-Control Environment
@@ -200,8 +200,8 @@ tau2 run --domain airline --agent-llm gpt-4 --user-llm gpt-4 --num-trials 1 --nu
 
 1. **Install**: `pip install -e .`
 2. **Configure**: Set up your LLM API keys in `.env`
-3. **Run**: `tau2 run --domain mock --agent-llm gpt-4 --user-llm gpt-4 --num-trials 1`
-4. **Explore**: `tau2 view` to see your results
+3. **Run**: `duma run --domain mock --agent-llm gpt-4 --user-llm gpt-4 --num-trials 1`
+4. **Explore**: `duma view` to see your results
 
 ### 🤝 Community & Research
 

@@ -74,7 +74,7 @@ For urgent releases or when automation isn't available:
 1. **Pre-Release Testing**
    ```bash
    make test  # Run full test suite
-   tau2 run --domain mock --num-tasks 1  # Quick integration test
+   duma run --domain mock --num-tasks 1  # Quick integration test
    ```
 
 2. **Update Files**
@@ -229,7 +229,7 @@ jobs:
       - uses: google-github-actions/release-please-action@v4
         with:
           release-type: python
-          package-name: tau2
+          package-name: duma
           version-file: pyproject.toml
           include-v-in-tag: true
           changelog-types: |

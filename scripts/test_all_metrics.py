@@ -17,7 +17,7 @@ from result_collection import (
     compare_continuous_metrics,
     compare_conversion_metrics,
 )
-from tau2.utils.utils import DATA_DIR
+from duma.utils.utils import DATA_DIR
 
 
 def test_all_metrics():

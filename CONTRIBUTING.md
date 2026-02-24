@@ -102,8 +102,8 @@ new-stuff
 ### 1. Environment Setup
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/tau2-bench.git
-cd tau2-bench
+git clone https://github.com/your-username/duma-bench.git
+cd duma-bench
 
 # Create and activate virtual environment
 python -m venv .venv
@@ -113,7 +113,7 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -e .
 
 # Verify installation
-tau2 check-data
+duma check-data
 ```
 
 ### 2. Development Dependencies

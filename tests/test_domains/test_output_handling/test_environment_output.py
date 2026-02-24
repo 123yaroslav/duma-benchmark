@@ -1,5 +1,5 @@
-from tau2.domains.output_handling.environment import get_environment, get_tasks
-from tau2.domains.output_handling.tools import OutputTools
+from duma.domains.output_handling.environment import get_environment, get_tasks
+from duma.domains.output_handling.tools import OutputTools
 
 
 def test_environment_returns_output_tools():
