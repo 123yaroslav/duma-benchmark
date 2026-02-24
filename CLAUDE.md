@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-τ²-Bench is a Python benchmark framework for evaluating AI agents on security-focused conversational tasks. It simulates conversations between an AI agent and a user, then evaluates agent adherence to security policies and robustness against adversarial scenarios.
+DUMA-Bench is a Python benchmark framework for evaluating AI agents on security-focused conversational tasks. It simulates conversations between an AI agent and a user, then evaluates agent adherence to security policies and robustness against adversarial scenarios.
 
 ## Build & Development Commands
 
@@ -88,11 +88,11 @@ Key Pydantic models in `src/duma/data_model/`:
 - `RunConfig`: Simulation configuration (domains, LLMs, parallelism)
 - `SimulationRun`: Single task trial with messages and reward
 - `Task`: User scenario + evaluation criteria
-- `Message` types: `UserMessage`, `AssistantMessage`, `ToolResponseMessage`
+- `Message` types: `UserMessage`, `AssistantMessage`, `ToolMessage`
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and configure:
+Configure `.env` with:
 - LiteLLM API keys for your LLM providers
 - `LLM_CACHE_ENABLED=True` for Redis caching
 - `USE_LANGFUSE=True` for observability
@@ -104,10 +104,11 @@ Copy `.env.example` to `.env` and configure:
 3. Register in `src/duma/registry.py`
 4. Add tests to `tests/test_domains/my_domain/`
 
-## Leaderboard Submission
+## Results Export
 
 ```bash
-duma submit prepare data/duma/simulations/*.json --output ./submission
-duma submit validate ./submission
+# Example: run benchmark and keep outputs in simulations directory
+duma run --domain collab --agent-llm gpt-4o-mini --num-trials 1
 ```
-Requires results from all 6 core domains. Submit via PR to `web/leaderboard/public/submissions/`.
+Use `data/duma/simulations/` as the source of truth for result files.
+Legacy `web/leaderboard` submission flow is no longer used in this repository.
