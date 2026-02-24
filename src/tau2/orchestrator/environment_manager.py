@@ -86,7 +86,7 @@ class EnvironmentManager:
         # Start a new environment
         POST /start_environment
         {
-            "domain_name": "mock"
+            "domain_name": "collab"
         }
         > {"env_id": "1234-5678-90ab"}
 
@@ -99,9 +99,9 @@ class EnvironmentManager:
         > {"status": "success"}
 
         # Call a tool in the environment
-        POST /1234-5678-90ab/tools/get_users
+        POST /1234-5678-90ab/tools/get_ticket_summary
         {
-            "tool_name": "get_users",
+            "tool_name": "get_ticket_summary",
             "tool_args": {}
         }
         > {"role": "tool", ...}

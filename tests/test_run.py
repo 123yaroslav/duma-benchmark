@@ -90,7 +90,7 @@ def test_get_tasks():
     not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
 )
 def test_simplified_run(domain_name: str):
-    """Test that we can run a task with the mock domain"""
+    """Test that we can run a task with a registered domain."""
 
     def run_simple_task(user_instruction: str, domain_name: str):
         task = make_task(
@@ -127,7 +127,7 @@ def test_simplified_run(domain_name: str):
     not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
 )
 def test_run_tasks_base(domain_name: str, base_task: Task):
-    """Test running a task with the mock domain"""
+    """Test running a task with a registered domain."""
     results = run_tasks(
         domain=domain_name,
         tasks=[base_task],
@@ -153,7 +153,7 @@ def test_run_tasks_base(domain_name: str, base_task: Task):
     not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
 )
 def test_run_task_base(domain_name: str, base_task: Task):
-    """Test running a task with the mock domain"""
+    """Test running a task with a registered domain."""
     simulation = run_task(
         domain=domain_name,
         task=base_task,
@@ -309,7 +309,7 @@ def test_run_tasks_history_and_env_assertions(
 
 @pytest.mark.skip(reason="Legacy mock-domain NL assertion test no longer supported")
 def test_run_tasks_nl_assertions(domain_name: str):
-    """Test running a task with the mock domain"""
+    """Legacy NL assertion coverage test."""
     task = get_tasks(domain_name, task_ids=["create_task_1_nl_eval"])[0]
     simulation = run_task(
         domain=domain_name,
@@ -385,7 +385,7 @@ def test_run_tasks_action_checks(domain_name: str, task_with_action_checks: Task
     not LIVE_LLM_TESTS, reason="Requires live LLM access (set TAU2_LIVE_LLM_TESTS=1)"
 )
 def test_run_domain(run_config: RunConfig):
-    """Test running a domain with the mock domain
+    """Test running a configured domain.
     Requires environment manager to be running
     """
     simulation_results = run_domain(run_config)

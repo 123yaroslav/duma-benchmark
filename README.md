@@ -164,86 +164,6 @@ tau2 check-data
 ```
 This command checks if your data directory is properly configured and all required files are present.
 
-## Leaderboard Submission
-
-To submit your agent results to the τ²-bench leaderboard, you need to prepare a valid submission package that meets specific requirements.
-
-### Requirements for Valid Submissions
-
-Your trajectory runs must follow these constraints:
-
-1. **Complete domain coverage**: Include results for all core domains:
-   - `collab`
-   - `crm_leak`
-   - `mail_rag_nexport`
-   - `mail_rag_phishing`
-   - `infra_loadshed`
-   - `output_handling`
-
-2. **Consistent model configuration**: All trajectory files must use:
-   - The same agent LLM with identical arguments across all domains
-   - The same user simulator LLM with identical arguments across all domains
-
-3. **One result per domain**: Each domain should appear exactly once in your submission
-
-4. **All tasks completed**: Run evaluation on all tasks within each domain (don't use `--task-ids` or `--num-tasks` filters)
-
-### Preparing Your Submission
-
-#### Step 1: Run Evaluations
-First, run your agent evaluation on all domains with consistent settings:
-
-```bash
-# Example: Run complete evaluation for all domains
-tau2 run --domains collab crm_leak mail_rag_nexport mail_rag_phishing infra_loadshed output_handling \
-  --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 4 --save-to my_model_all
-```
-
-**Important**: Use identical `--agent-llm`, `--user-llm`, and their arguments across all runs.
-
-#### Step 2: Prepare Submission Package
-Use the submission preparation tool to create your leaderboard submission:
-
-```bash
-tau2 submit prepare data/tau2/simulations/my_model_*.json --output ./my_submission
-```
-
-This command will:
-- Verify all trajectory files are valid
-- Check that submission requirements are met
-- Compute performance metrics (Pass^k rates)
-- Prompt for required metadata (model name, organization, contact email)
-- Create a structured submission directory with:
-  - `submission.json`: Metadata and metrics
-  - `trajectories/`: Your trajectory files
-
-#### Step 3: Validate Your Submission
-Before submitting, validate your submission package:
-
-```bash
-tau2 submit validate ./my_submission
-```
-
-This will verify:
-- All required files are present
-- Trajectory files are valid
-- Domain coverage is complete
-- Model configurations are consistent
-
-### Additional Options
-
-#### Skip Verification (if needed)
-```bash
-tau2 submit prepare data/tau2/simulations/my_model_*.json --output ./my_submission --no-verify
-```
-
-#### Verify Individual Trajectory Files
-```bash
-tau2 submit verify-trajs data/tau2/simulations/my_model_*.json
-```
-
-### Submitting to the Leaderboard
-
 ## Experiments
 
 ### Experimental Code Directory
@@ -294,7 +214,7 @@ For all the details see the domains [README](src/tau2/domains/README.md).
 #### View domain-specific policy and API docs:
 Run the following command to see the domain policy and API documentation.
 ```bash
-tau2 env <domain>
+tau2 domain <domain>
 ```
 
 Then visit http://127.0.0.1:8004/redoc
@@ -323,9 +243,9 @@ $ make env-cli
 Welcome to the Environment CLI!
 Connected to collab domain.
 
-Query (:n new session, :d change domain, :q quit)> What flights are available from SF to LA tomorrow?
-Assistant: Let me check the flight availability for you...
-[Flight details will appear here]
+Query (:n new session, :d change domain, :q quit)> Please summarize the ticket and explain why we cannot share raw logs.
+Assistant: I can inspect the ticket context and collaborator notes first.
+[Tool outputs and policy-aligned response will appear here]
 ```
 
 The Environment CLI is useful for:
