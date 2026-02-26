@@ -128,6 +128,45 @@ duma run \
   ...
 ```
 
+### Agent Modes
+
+The benchmark supports three built-in agent modes:
+
+- `llm_agent` (default): regular interactive mode with simulated user (`user_simulator`).
+- `llm_agent_gt`: ground-truth helper mode for debugging/validation. The agent receives expected task actions in its system prompt. Use this as a diagnostic baseline, not as a fair production benchmark.
+- `llm_agent_solo`: no-user mode. The agent works directly with tools and finishes by calling `done`; this mode must be paired with `--user dummy_user`.
+
+Examples:
+
+```bash
+# Default interactive benchmark mode
+duma run \
+  --domain collab \
+  --agent llm_agent \
+  --user user_simulator \
+  --agent-llm gpt-4.1 \
+  --user-llm gpt-4.1
+```
+
+```bash
+# Ground-truth diagnostic mode
+duma run \
+  --domain collab \
+  --agent llm_agent_gt \
+  --user user_simulator \
+  --agent-llm gpt-4.1 \
+  --user-llm gpt-4.1
+```
+
+```bash
+# No-user (solo) mode
+duma run \
+  --domain collab \
+  --agent llm_agent_solo \
+  --user dummy_user \
+  --agent-llm gpt-4.1
+```
+
 ### Viewing Results
 ```bash
 duma view
