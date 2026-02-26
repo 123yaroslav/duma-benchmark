@@ -1808,13 +1808,16 @@ def main():
         output_path=significance_table_path,
     )
 
-    generate_temperature_significance_table_latex(
-        result_files,
-        args.domains,
-        [_normalize_model_name(m) for m in args.models],
-        [float(t) for t in args.temperatures],
-        output_path=temp_significance_table_path,
-    )
+    if len(args.temperatures) >= 2:
+        generate_temperature_significance_table_latex(
+            result_files,
+            args.domains,
+            [_normalize_model_name(m) for m in args.models],
+            [float(t) for t in args.temperatures],
+            output_path=temp_significance_table_path,
+        )
+    else:
+        print("Skipping temperature significance table (need at least 2 temperatures)")
 
     print(
         "Tables generated: "

@@ -725,7 +725,7 @@ def _aggregate_pass_k_by_domain(
 
     Returns dict mapping k -> average pass^k (or None if not enough trials).
     """
-    from tau2.metrics.agent_metrics import pass_hat_k
+    from duma.metrics.agent_metrics import pass_hat_k
 
     norm_model = _normalize_model_name(model)
 
