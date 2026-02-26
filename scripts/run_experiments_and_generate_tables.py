@@ -135,6 +135,7 @@ def run_all_experiments(
     output_dir: Optional[Path] = None,  # Не используется, оставлено для совместимости
     parallel_experiments: int = 4,  # Количество параллельных экспериментов
     force_rerun: bool = False,  # Принудительно перезапустить все эксперименты
+    user_llm: Optional[str] = None,  # Модель для симуляции пользователя
 ) -> Path:
     """
     Запустить все эксперименты.
@@ -225,7 +226,10 @@ def run_all_experiments(
                 for task in tasks:
                     # Формируем имя файла без расширения (duma добавит .json автоматически)
                     model_id = _model_id_for_results(model)
-                    file_name = f"paper_results_{domain}_{_sanitize_model_for_filename(model_id)}_T{temp}_{task}"
+                    # Определяем модель пользователя
+                    effective_user_llm = user_llm if user_llm else model
+                    user_model_id = _model_id_for_results(effective_user_llm)
+                    file_name = f"paper_results_{domain}_{_sanitize_model_for_filename(model_id)}_U{_sanitize_model_for_filename(user_model_id)}_T{temp}_{task}"
                     # Фактический путь к файлу результата
                     output_file = actual_output_dir / f"{file_name}.json"
 
@@ -238,7 +242,7 @@ def run_all_experiments(
                         "--agent-llm",
                         model,
                         "--user-llm",
-                        model,
+                        effective_user_llm,
                         "--user-llm-args",
                         json.dumps({"temperature": temp}),
                         "--num-trials",
@@ -249,6 +253,7 @@ def run_all_experiments(
                         file_name,  # Без расширения и пути
                         "--max-concurrency",
                         str(max_concurrency),
+                        "--local-models"
                     ]
                     # Проверка: убедимся, что все аргументы - строки
                     cmd = [str(arg) for arg in cmd]
@@ -611,15 +616,21 @@ def generate_visualizations(metrics: Dict, output_dir: Path):
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # List of all figures that should be generated
+    all_figure_names = [
+        "pass1_by_domain",
+        "pass2_by_domain",
+        "pass3_by_domain",
+        "pass4_by_domain",
+        "asr_by_domain",
+        "temperature_effect",
+        "metrics_heatmap",
+    ]
+
     if not metrics:
         print("⚠️  No metrics to visualize - creating placeholder files")
         # Создать пустые заглушки для LaTeX
-        for fig_name in [
-            "pass1_by_domain",
-            "asr_by_domain",
-            "temperature_effect",
-            "metrics_heatmap",
-        ]:
+        for fig_name in all_figure_names:
             placeholder_path = output_dir / f"{fig_name}.pdf"
             # Создать минимальный PDF заглушку
             try:
@@ -762,6 +773,175 @@ def generate_visualizations(metrics: Dict, output_dir: Path):
             )
             plt.close()
             print(f"Saved: {output_dir / 'pass1_by_domain.pdf'}")
+
+    # 1b. Графики pass@k (k=2,3,4) по доменам и моделям
+    for k in [2, 3, 4]:
+        pass_k_col = f"pass^{k}"
+        if pass_k_col not in df.columns:
+            continue
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        if "domain" in df.columns and "model" in df.columns:
+            passk_agg = (
+                df.groupby(["model", "domain"], as_index=False)
+                .agg({pass_k_col: "mean"})
+                .copy()
+            )
+
+            if passk_agg is not None and not passk_agg.empty:
+                pivot_passk = passk_agg.pivot_table(
+                    values=pass_k_col, index="model", columns="domain", aggfunc="mean"
+                )
+                pivot_passk.plot(
+                    kind="bar", ax=ax, width=0.7, edgecolor="black", linewidth=0.5
+                )
+                ax.set_ylabel(f"pass@{k}", fontsize=11)
+                ax.set_xlabel("Model", fontsize=11)
+                ax.legend(
+                    title="Domain",
+                    fontsize=9,
+                    frameon=True,
+                    fancybox=False,
+                    edgecolor="black",
+                )
+                ax.grid(True, alpha=0.2, axis="y", linestyle="--", linewidth=0.5)
+                ax.set_ylim([0, 1.05])
+                plt.xticks(rotation=45, ha="right")
+                plt.tight_layout()
+                plt.savefig(
+                    output_dir / f"pass{k}_by_domain.pdf",
+                    dpi=300,
+                    bbox_inches="tight",
+                    pad_inches=0.1,
+                )
+                plt.close()
+                print(f"Saved: {output_dir / f'pass{k}_by_domain.pdf'}")
+
+    # 1c. Графики pass@k по доменам, разделенные по температуре
+    if "temperature" in df.columns:
+        temperatures = sorted(df["temperature"].unique())
+        for temp in temperatures:
+            temp_subset = df[df["temperature"] == temp]
+            if temp_subset.empty:
+                continue
+
+            for k in [1, 2, 3, 4]:
+                pass_k_col = f"pass^{k}"
+                if pass_k_col not in temp_subset.columns:
+                    continue
+
+                fig, ax = plt.subplots(figsize=(6, 4))
+                if "domain" in temp_subset.columns and "model" in temp_subset.columns:
+                    passk_agg = (
+                        temp_subset.groupby(["model", "domain"], as_index=False)
+                        .agg({pass_k_col: "mean"})
+                        .copy()
+                    )
+
+                    if passk_agg is not None and not passk_agg.empty:
+                        pivot_passk = passk_agg.pivot_table(
+                            values=pass_k_col, index="model", columns="domain", aggfunc="mean"
+                        )
+                        pivot_passk.plot(
+                            kind="bar", ax=ax, width=0.7, edgecolor="black", linewidth=0.5
+                        )
+                        ax.set_ylabel(f"pass@{k}", fontsize=11)
+                        ax.set_xlabel("Model", fontsize=11)
+                        ax.set_title(f"Temperature = {temp}", fontsize=12)
+                        ax.legend(
+                            title="Domain",
+                            fontsize=9,
+                            frameon=True,
+                            fancybox=False,
+                            edgecolor="black",
+                        )
+                        ax.grid(True, alpha=0.2, axis="y", linestyle="--", linewidth=0.5)
+                        ax.set_ylim([0, 1.05])
+                        plt.xticks(rotation=45, ha="right")
+                        plt.tight_layout()
+                        # Filename: pass1_by_domain_T0.0.pdf, etc.
+                        temp_str = f"{temp}".replace(".", "_")
+                        plt.savefig(
+                            output_dir / f"pass{k}_by_domain_T{temp_str}.pdf",
+                            dpi=300,
+                            bbox_inches="tight",
+                            pad_inches=0.1,
+                        )
+                        plt.close()
+                        print(f"Saved: {output_dir / f'pass{k}_by_domain_T{temp_str}.pdf'}")
+
+    # 1d. Comprehensive pass@k heatmap by model, domain, and temperature
+    if (
+        "temperature" in df.columns
+        and "domain" in df.columns
+        and "model" in df.columns
+    ):
+        from matplotlib import colors as mcolors
+
+        for k in [1, 2, 3, 4]:
+            pass_k_col = f"pass^{k}"
+            if pass_k_col not in df.columns:
+                continue
+
+            # Aggregate by model, temperature, domain
+            agg_passk = (
+                df.groupby(["model", "temperature", "domain"], as_index=False)
+                .agg({pass_k_col: "mean"})
+                .copy()
+            )
+
+            if agg_passk.empty:
+                continue
+
+            # Make readable row labels
+            agg_passk["model_T"] = agg_passk.apply(
+                lambda r: f"{r['model']} (T={float(r['temperature']):g})", axis=1
+            )
+
+            fig, ax = plt.subplots(figsize=(8, 6))
+            heatmap_data = agg_passk.pivot_table(
+                values=pass_k_col, index="model_T", columns="domain", aggfunc="mean"
+            )
+
+            # Stable ordering: sort by model then temperature
+            heatmap_data = heatmap_data.reindex(
+                sorted(
+                    heatmap_data.index,
+                    key=lambda s: (s.split(" (T=")[0], float(s.split("T=")[1].rstrip(")"))),
+                )
+            )
+
+            cmap = "cividis"
+            norm = mcolors.PowerNorm(gamma=0.6, vmin=0.0, vmax=1.0)
+
+            sns.heatmap(
+                heatmap_data,
+                annot=True,
+                fmt=".2f",
+                cmap=cmap,
+                norm=norm,
+                ax=ax,
+                cbar_kws={"label": f"pass@{k}", "shrink": 0.85},
+                linewidths=0.5,
+                linecolor="white",
+                square=False,
+                annot_kws={"fontsize": 8},
+            )
+            ax.set_xlabel("Domain", fontsize=11)
+            ax.set_ylabel("Model (T)", fontsize=11)
+            ax.set_title(f"pass@{k} by Model, Domain, and Temperature", fontsize=12)
+            ax.tick_params(labelsize=9)
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=30, ha="right")
+            ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+            plt.tight_layout()
+            plt.savefig(
+                output_dir / f"pass{k}_heatmap.pdf",
+                dpi=300,
+                bbox_inches="tight",
+                pad_inches=0.1,
+            )
+            plt.close()
+            print(f"Saved: {output_dir / f'pass{k}_heatmap.pdf'}")
 
     # 2. График ASR по доменам и моделям
     fig, ax = plt.subplots(figsize=(6, 4))
@@ -1316,7 +1496,13 @@ def main():
         "--models",
         nargs="+",
         default=["gpt-4o", "gpt-4o-mini", "gpt-5.1", "gpt-5.2"],
-        help="Модели для тестирования",
+        help="Модели агента для тестирования",
+    )
+    parser.add_argument(
+        "--user-llm",
+        type=str,
+        default=None,
+        help="Модель для симуляции пользователя (по умолчанию: такая же как agent)",
     )
     parser.add_argument(
         "--temperatures",
@@ -1405,6 +1591,7 @@ def main():
             args.max_concurrency,
             args.results_dir,
             force_rerun=args.force_rerun,
+            user_llm=args.user_llm,
         )
     else:
         print("Пропуск запуска экспериментов (--skip-experiments)")
@@ -1473,9 +1660,13 @@ def main():
         for model in args.models:
             model_id = _model_id_for_results(model)
             file_model = _sanitize_model_for_filename(model_id)
+            # Определяем модель пользователя
+            effective_user_llm = args.user_llm if args.user_llm else model
+            user_model_id = _model_id_for_results(effective_user_llm)
+            file_user_model = _sanitize_model_for_filename(user_model_id)
             for temp in args.temperatures:
                 for task_id in domain_tasks:
-                    stem = f"paper_results_{domain}_{file_model}_T{temp}_{task_id}"
+                    stem = f"paper_results_{domain}_{file_model}_U{file_user_model}_T{temp}_{task_id}"
                     expected_files.append((results_dir / f"{stem}.json", task_id))
 
     missing_or_incomplete: list[str] = []
