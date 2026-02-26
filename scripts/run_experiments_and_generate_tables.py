@@ -136,6 +136,7 @@ def run_all_experiments(
     parallel_experiments: int = 4,  # Количество параллельных экспериментов
     force_rerun: bool = False,  # Принудительно перезапустить все эксперименты
     user_llm: Optional[str] = None,  # Модель для симуляции пользователя
+    solo: bool = False,  # Режим solo (агент без пользователя)
 ) -> Path:
     """
     Запустить все эксперименты.
@@ -226,35 +227,66 @@ def run_all_experiments(
                 for task in tasks:
                     # Формируем имя файла без расширения (duma добавит .json автоматически)
                     model_id = _model_id_for_results(model)
-                    # Определяем модель пользователя
-                    effective_user_llm = user_llm if user_llm else model
-                    user_model_id = _model_id_for_results(effective_user_llm)
-                    file_name = f"paper_results_{domain}_{_sanitize_model_for_filename(model_id)}_U{_sanitize_model_for_filename(user_model_id)}_T{temp}_{task}"
+
+                    if solo:
+                        file_name = f"paper_results_solo_{domain}_{_sanitize_model_for_filename(model_id)}_T{temp}_{task}"
+                    else:
+                        # Определяем модель пользователя
+                        effective_user_llm = user_llm if user_llm else model
+                        user_model_id = _model_id_for_results(effective_user_llm)
+                        file_name = f"paper_results_{domain}_{_sanitize_model_for_filename(model_id)}_U{_sanitize_model_for_filename(user_model_id)}_T{temp}_{task}"
+
                     # Фактический путь к файлу результата
                     output_file = actual_output_dir / f"{file_name}.json"
 
-                    # Формируем команду точно как в README
-                    cmd = [
-                        "duma",
-                        "run",
-                        "--domain",
-                        domain,
-                        "--agent-llm",
-                        model,
-                        "--user-llm",
-                        effective_user_llm,
-                        "--user-llm-args",
-                        json.dumps({"temperature": temp}),
-                        "--num-trials",
-                        str(num_trials),
-                        "--task-ids",
-                        task,
-                        "--save-to",
-                        file_name,  # Без расширения и пути
-                        "--max-concurrency",
-                        str(max_concurrency),
-                        "--local-models"
-                    ]
+                    # Формируем команду
+                    if solo:
+                        cmd = [
+                            "duma",
+                            "run",
+                            "--domain",
+                            domain,
+                            "--agent",
+                            "llm_agent_solo",
+                            "--user",
+                            "dummy_user",
+                            "--agent-llm",
+                            model,
+                            "--agent-llm-args",
+                            json.dumps({"temperature": temp}),
+                            "--num-trials",
+                            str(num_trials),
+                            "--task-ids",
+                            task,
+                            "--save-to",
+                            file_name,
+                            "--max-concurrency",
+                            str(max_concurrency),
+                            "--local-models",
+                        ]
+                    else:
+                        effective_user_llm = user_llm if user_llm else model
+                        cmd = [
+                            "duma",
+                            "run",
+                            "--domain",
+                            domain,
+                            "--agent-llm",
+                            model,
+                            "--user-llm",
+                            effective_user_llm,
+                            "--user-llm-args",
+                            json.dumps({"temperature": temp}),
+                            "--num-trials",
+                            str(num_trials),
+                            "--task-ids",
+                            task,
+                            "--save-to",
+                            file_name,
+                            "--max-concurrency",
+                            str(max_concurrency),
+                            "--local-models",
+                        ]
                     # Проверка: убедимся, что все аргументы - строки
                     cmd = [str(arg) for arg in cmd]
                     commands.append((cmd, output_file))
@@ -1564,6 +1596,11 @@ def main():
         default=Path("docs/paper_template/template.tex"),
         help="Путь к template.tex",
     )
+    parser.add_argument(
+        "--solo",
+        action="store_true",
+        help="Run in solo mode (agent without user, --agent llm_agent_solo --user dummy_user)",
+    )
 
     args = parser.parse_args()
 
@@ -1592,6 +1629,7 @@ def main():
             args.results_dir,
             force_rerun=args.force_rerun,
             user_llm=args.user_llm,
+            solo=args.solo,
         )
     else:
         print("Пропуск запуска экспериментов (--skip-experiments)")
@@ -1660,14 +1698,20 @@ def main():
         for model in args.models:
             model_id = _model_id_for_results(model)
             file_model = _sanitize_model_for_filename(model_id)
-            # Определяем модель пользователя
-            effective_user_llm = args.user_llm if args.user_llm else model
-            user_model_id = _model_id_for_results(effective_user_llm)
-            file_user_model = _sanitize_model_for_filename(user_model_id)
-            for temp in args.temperatures:
-                for task_id in domain_tasks:
-                    stem = f"paper_results_{domain}_{file_model}_U{file_user_model}_T{temp}_{task_id}"
-                    expected_files.append((results_dir / f"{stem}.json", task_id))
+            if args.solo:
+                for temp in args.temperatures:
+                    for task_id in domain_tasks:
+                        stem = f"paper_results_solo_{domain}_{file_model}_T{temp}_{task_id}"
+                        expected_files.append((results_dir / f"{stem}.json", task_id))
+            else:
+                # Определяем модель пользователя
+                effective_user_llm = args.user_llm if args.user_llm else model
+                user_model_id = _model_id_for_results(effective_user_llm)
+                file_user_model = _sanitize_model_for_filename(user_model_id)
+                for temp in args.temperatures:
+                    for task_id in domain_tasks:
+                        stem = f"paper_results_{domain}_{file_model}_U{file_user_model}_T{temp}_{task_id}"
+                        expected_files.append((results_dir / f"{stem}.json", task_id))
 
     missing_or_incomplete: list[str] = []
     selected_result_files: list[Path] = []
