@@ -137,6 +137,8 @@ def run_all_experiments(
     force_rerun: bool = False,  # Принудительно перезапустить все эксперименты
     user_llm: Optional[str] = None,  # Модель для симуляции пользователя
     solo: bool = False,  # Режим solo (агент без пользователя)
+    agent_base_url: Optional[str] = None,  # Base URL для провайдера LLM
+    api_key_env: Optional[str] = None,  # Имя переменной окружения для API ключа
 ) -> Path:
     """
     Запустить все эксперименты.
@@ -240,6 +242,7 @@ def run_all_experiments(
                     output_file = actual_output_dir / f"{file_name}.json"
 
                     # Формируем команду
+                    use_local_models = not agent_base_url and not api_key_env
                     if solo:
                         cmd = [
                             "duma",
@@ -262,7 +265,6 @@ def run_all_experiments(
                             file_name,
                             "--max-concurrency",
                             str(max_concurrency),
-                            "--local-models",
                         ]
                     else:
                         effective_user_llm = user_llm if user_llm else model
@@ -285,8 +287,14 @@ def run_all_experiments(
                             file_name,
                             "--max-concurrency",
                             str(max_concurrency),
-                            "--local-models",
                         ]
+                    # Добавляем base URL и API key env если указаны
+                    if agent_base_url:
+                        cmd += ["--agent-base-url", agent_base_url]
+                    if api_key_env:
+                        cmd += ["--api-key-env", api_key_env]
+                    if use_local_models:
+                        cmd += ["--local-models"]
                     # Проверка: убедимся, что все аргументы - строки
                     cmd = [str(arg) for arg in cmd]
                     commands.append((cmd, output_file))
@@ -1601,6 +1609,18 @@ def main():
         action="store_true",
         help="Run in solo mode (agent without user, --agent llm_agent_solo --user dummy_user)",
     )
+    parser.add_argument(
+        "--agent-base-url",
+        type=str,
+        default=None,
+        help="Base URL for agent LLM provider (e.g. https://api.vsellm.ru/v1)",
+    )
+    parser.add_argument(
+        "--api-key-env",
+        type=str,
+        default=None,
+        help="Environment variable name for API key (e.g. VSE_LLM_API_KEY)",
+    )
 
     args = parser.parse_args()
 
@@ -1630,6 +1650,8 @@ def main():
             force_rerun=args.force_rerun,
             user_llm=args.user_llm,
             solo=args.solo,
+            agent_base_url=args.agent_base_url,
+            api_key_env=args.api_key_env,
         )
     else:
         print("Пропуск запуска экспериментов (--skip-experiments)")
