@@ -100,5 +100,3 @@ Conversation:
         except Exception:
             verdict = False
         return verdict
-
-
