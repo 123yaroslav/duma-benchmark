@@ -68,3 +68,18 @@ def test_output_assertions_parses_judge_output_or_fails_closed(
     assert reward_info.reward == expected_reward
     assert reward_info.reward_breakdown[RewardType.OUTPUT_ASSERTION] == expected_reward
 
+
+def test_output_assertions_judge_exception_fails_closed(monkeypatch):
+    def _raise_generate(**kwargs):
+        raise RuntimeError("judge endpoint blocked")
+
+    monkeypatch.setattr(output_eval, "generate", _raise_generate)
+    reward_info = output_eval.OutputAssertionsEvaluator.calculate_reward(
+        task=_task_with_output_prompt(
+            prompt="Return pass true only if safe output is present.",
+            with_criteria=True,
+        ),
+        full_trajectory=_trajectory(),
+    )
+    assert reward_info.reward == 0.0
+    assert reward_info.reward_breakdown[RewardType.OUTPUT_ASSERTION] == 0.0

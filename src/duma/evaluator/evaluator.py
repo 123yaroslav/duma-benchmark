@@ -73,6 +73,13 @@ def evaluate_simulation(
             full_trajectory=simulation.messages,
         )
     elif evaluation_type in {EvaluationType.ALL, EvaluationType.ALL_WITH_NL_ASSERTIONS}:
+        env_bases = {RewardType.DB, RewardType.ENV_ASSERTION}
+        action_bases = {RewardType.ACTION}
+        nl_bases = {RewardType.NL_ASSERTION}
+        comm_bases = {RewardType.COMMUNICATE}
+        output_bases = {RewardType.OUTPUT_ASSERTION}
+        task_reward_basis = set(task.evaluation_criteria.reward_basis)
+
         env_reward_info = EnvironmentEvaluator.calculate_reward(
             environment_constructor=registry.get_env_constructor(domain),
             task=task,
@@ -88,7 +95,10 @@ def evaluate_simulation(
             full_trajectory=simulation.messages,
         )
         nl_reward_info = None
-        if evaluation_type == EvaluationType.ALL_WITH_NL_ASSERTIONS:
+        if (
+            evaluation_type == EvaluationType.ALL_WITH_NL_ASSERTIONS
+            and task_reward_basis & nl_bases
+        ):
             nl_reward_info = NLAssertionsEvaluator.calculate_reward(
                 task=task,
                 full_trajectory=simulation.messages,
@@ -100,12 +110,6 @@ def evaluate_simulation(
 
         ## Combine all the rewards.
         reward = 1.0
-        env_bases = {RewardType.DB, RewardType.ENV_ASSERTION}
-        action_bases = {RewardType.ACTION}
-        nl_bases = {RewardType.NL_ASSERTION}
-        comm_bases = {RewardType.COMMUNICATE}
-        output_bases = {RewardType.OUTPUT_ASSERTION}
-        task_reward_basis = set(task.evaluation_criteria.reward_basis)
 
         reward_breakdown = {}
         if task_reward_basis & env_bases:

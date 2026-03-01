@@ -89,12 +89,12 @@ Conversation:
             SystemMessage(role="system", content=system_prompt),
             UserMessage(role="user", content=user_prompt),
         ]
-        assistant_message = generate(
-            model=DEFAULT_LLM_OUTPUT_ASSERTIONS,
-            messages=messages,
-            **DEFAULT_LLM_OUTPUT_ASSERTIONS_ARGS,
-        )
         try:
+            assistant_message = generate(
+                model=DEFAULT_LLM_OUTPUT_ASSERTIONS,
+                messages=messages,
+                **DEFAULT_LLM_OUTPUT_ASSERTIONS_ARGS,
+            )
             data = json.loads(assistant_message.content)
             verdict = bool(data.get("pass", False))
         except Exception:
