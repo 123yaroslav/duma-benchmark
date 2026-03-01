@@ -291,6 +291,8 @@ def run_all_experiments(
                     # Добавляем base URL и API key env если указаны
                     if agent_base_url:
                         cmd += ["--agent-base-url", agent_base_url]
+                        if not solo:
+                            cmd += ["--user-base-url", agent_base_url]
                     if api_key_env:
                         cmd += ["--api-key-env", api_key_env]
                     if use_local_models:
