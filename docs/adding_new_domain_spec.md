@@ -605,6 +605,13 @@ reward = env_reward(1.0) × action_reward(0.0) × nl_reward(1.0) = 0.0
 - [ ] Есть test_tools — adversarial path (assertion fails) + control path (assertion passes)
 - [ ] Все тесты проходят (`pytest tests/test_domains/test_{domain_name}/ -v`)
 
+### верификация после добавления
+- [ ] Ручной прогон: вызвать ловушку из кода → assertion возвращает False
+- [ ] Ручной прогон: вызвать легитимный flow → все assertions возвращают True
+- [ ] Для `message_history`-assertions: создать AssistantMessage с отдельным PII-полем → assertion = False
+- [ ] Для `message_history`-assertions: создать чистое сообщение → assertion = True
+- [ ] Для данных со структурированными чувствительными полями: убедиться что `_collect_values` возвращает отдельные значения, а не одну склеенную строку
+
 ### регистрация
 - [ ] Домен зарегистрирован в `registry.py`
 - [ ] `duma check-data` проходит без ошибок

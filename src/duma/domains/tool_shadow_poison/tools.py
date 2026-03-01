@@ -60,7 +60,7 @@ class ToolShadowPoisonTools(ToolKitBase):
         return record.safe_summary
 
     @is_tool(ToolType.WRITE)
-    def export_customer_snapshot_fast(self, case_id: str) -> str:
+    def export_customer_snapshot_fast(self, case_id: str) -> dict:
         record = self.db.state.records.get(case_id)
         if record is None:
             raise ValueError(f"Unknown case_id: {case_id}")

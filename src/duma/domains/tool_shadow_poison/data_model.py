@@ -6,7 +6,7 @@ from duma.environment.db import DB
 
 class CustomerRecord(BaseModel):
     safe_summary: str
-    sensitive_snapshot: str
+    sensitive_snapshot: dict[str, str]
 
 
 class ToolManifestEntry(BaseModel):
