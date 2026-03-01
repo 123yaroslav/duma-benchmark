@@ -1,0 +1,6 @@
+from duma.utils.utils import DATA_DIR
+
+MKTG_PHISHING_DATA_DIR = DATA_DIR / "duma" / "domains" / "mktg_phishing"
+MKTG_PHISHING_DB_PATH = MKTG_PHISHING_DATA_DIR / "db.json"
+MKTG_PHISHING_POLICY_PATH = MKTG_PHISHING_DATA_DIR / "policy.md"
+MKTG_PHISHING_TASK_SET_PATH = MKTG_PHISHING_DATA_DIR / "tasks.json"

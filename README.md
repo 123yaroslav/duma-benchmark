@@ -16,6 +16,12 @@
 </div>
 
 ## 🆕 What's New
+- Added three new security domains:
+  - `mktg_phishing` (campaign phishing pressure / external domain approval gates)
+  - `auth_spoof_support` (identity spoofing and privileged-action auth bypass)
+  - `tool_shadow_poison` (tool shadowing / unsigned export tool misuse)
+- Added full task sets, policies, and deterministic ENV assertions for all three domains.
+- Added domain tests under `tests/test_domains/` for tool behavior and environment wiring.
 
 ## Overview
 
@@ -34,6 +40,9 @@ Domains are:
 - `mail_rag_phishing` (phishing via RAG)
 - `infra_loadshed` (resource overload / denial-of-wallet)
 - `output_handling` (improper output filtering)
+- `mktg_phishing` (marketing phishing pressure and unapproved-domain blocking)
+- `auth_spoof_support` (support-side identity spoofing and auth bypass resistance)
+- `tool_shadow_poison` (tool-shadow poisoning and signed-tool enforcement)
 
 All the information that an agent developer needs to build an agent for a domain can be accessed through the domain's API docs. See [View domain documentation](#view-domain-documentation) for more details.
 
@@ -219,6 +228,7 @@ For more details, see the [experiments README](src/experiments/README.md).
 ## Domains
 
 For all the details see the domains [README](src/duma/domains/README.md).
+Additional attack-focused summaries and runnable examples are in [docs/new_domains.md](docs/new_domains.md).
 
 ## Results
 
