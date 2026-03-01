@@ -38,6 +38,22 @@ from duma.domains.output_handling.environment import (
     get_environment as output_handling_get_environment,
 )
 from duma.domains.output_handling.environment import get_tasks as output_handling_get_tasks
+from duma.domains.auth_spoof_support.environment import (
+    get_environment as auth_spoof_support_get_environment,
+)
+from duma.domains.auth_spoof_support.environment import (
+    get_tasks as auth_spoof_support_get_tasks,
+)
+from duma.domains.mktg_phishing.environment import (
+    get_environment as mktg_phishing_get_environment,
+)
+from duma.domains.mktg_phishing.environment import get_tasks as mktg_phishing_get_tasks
+from duma.domains.tool_shadow_poison.environment import (
+    get_environment as tool_shadow_poison_get_environment,
+)
+from duma.domains.tool_shadow_poison.environment import (
+    get_tasks as tool_shadow_poison_get_tasks,
+)
 
 
 class RegistryInfo(BaseModel):
@@ -194,6 +210,12 @@ try:
     registry.register_tasks(infra_loadshed_get_tasks, "infra_loadshed")
     registry.register_domain(output_handling_get_environment, "output_handling")
     registry.register_tasks(output_handling_get_tasks, "output_handling")
+    registry.register_domain(auth_spoof_support_get_environment, "auth_spoof_support")
+    registry.register_tasks(auth_spoof_support_get_tasks, "auth_spoof_support")
+    registry.register_domain(mktg_phishing_get_environment, "mktg_phishing")
+    registry.register_tasks(mktg_phishing_get_tasks, "mktg_phishing")
+    registry.register_domain(tool_shadow_poison_get_environment, "tool_shadow_poison")
+    registry.register_tasks(tool_shadow_poison_get_tasks, "tool_shadow_poison")
     logger.debug(
         f"Default components registered successfully. Registry info: {json.dumps(registry.get_info().model_dump(), indent=2)}"
     )
