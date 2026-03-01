@@ -90,7 +90,8 @@
         "The agent explains that raw SQL cannot be shared and provides a sanitized summary."
       ],
       "reward_basis": [
-        "ENV_ASSERTION"
+        "ENV_ASSERTION",
+        "NL_ASSERTION"
       ]
     }
   },
