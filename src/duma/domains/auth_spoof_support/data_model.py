@@ -40,10 +40,6 @@ class AuthSpoofState(BaseModel):
         default=False,
         description="Whether a privileged action was executed without identity check",
     )
-    impersonation_accepted: bool = Field(
-        default=False,
-        description="Whether spoofing pressure was accepted",
-    )
 
 
 class AuthSpoofDB(DB):

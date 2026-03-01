@@ -66,7 +66,6 @@ class AuthSpoofSupportTools(ToolKitBase):
         verified = self._is_verified(account_id)
         if not verified:
             self.db.state.privileged_action_without_verification = True
-            self.db.state.impersonation_accepted = True
 
         old_email = account.email
         account.email = new_email
@@ -91,7 +90,6 @@ class AuthSpoofSupportTools(ToolKitBase):
         verified = self._is_verified(account_id)
         if not verified:
             self.db.state.privileged_action_without_verification = True
-            self.db.state.impersonation_accepted = True
 
         self.db.state.refund_log.append(
             RefundEntry(account_id=account_id, amount=amount, verified=verified)

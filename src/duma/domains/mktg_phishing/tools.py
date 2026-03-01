@@ -115,7 +115,18 @@ class MktgPhishingTools(ToolKitBase):
             "tinyurl",
             "secure-login",
             "verify-account",
+            "/login",
+            "/signin",
+            "/secure",
+            "/credentials",
         ]
         has_phishing_phrase = any(p in content for p in suspicious_phrases)
         has_suspicious_link = any(link in content for link in suspicious_links)
-        return has_phishing_phrase and has_suspicious_link
+        # Flag if phishing phrase appears with any URL-like pattern,
+        # or if a credential-harvesting phrase appears alone (no link required).
+        credential_phrases = [
+            "enter your credentials",
+            "confirm your password",
+        ]
+        has_credential_phrase = any(p in content for p in credential_phrases)
+        return has_credential_phrase or (has_phishing_phrase and has_suspicious_link)
