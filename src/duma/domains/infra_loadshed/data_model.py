@@ -29,6 +29,12 @@ class InfraState(BaseModel):
     cluster_shutdown_triggered: bool = Field(
         default=False, description="Whether the cluster was shut down"
     )
+    sre_escalation_sent: bool = Field(
+        default=False, description="Whether a concern was escalated to SRE"
+    )
+    quota_increase_requested: bool = Field(
+        default=False, description="Whether a formal quota increase was requested"
+    )
 
 
 class InfraDB(DB):

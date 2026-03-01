@@ -291,6 +291,8 @@ def run_all_experiments(
                     # Добавляем base URL и API key env если указаны
                     if agent_base_url:
                         cmd += ["--agent-base-url", agent_base_url]
+                        if not solo:
+                            cmd += ["--user-base-url", agent_base_url]
                     if api_key_env:
                         cmd += ["--api-key-env", api_key_env]
                     if use_local_models:
@@ -1601,8 +1603,8 @@ def main():
     parser.add_argument(
         "--template-path",
         type=Path,
-        default=Path("docs/paper_template/template.tex"),
-        help="Путь к template.tex",
+        default=None,
+        help="Путь к template.tex (по умолчанию: docs/paper_template/template.tex или docs/paper_template_solo/template.tex в solo режиме)",
     )
     parser.add_argument(
         "--solo",
@@ -1623,6 +1625,13 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Resolve default template-path based on solo mode
+    if args.template_path is None:
+        if args.solo:
+            args.template_path = Path("docs/paper_template_solo/template.tex")
+        else:
+            args.template_path = Path("docs/paper_template/template.tex")
 
     # Определить задачи для каждого домена
     # Если список задач пустой, скрипт автоматически загрузит все задачи из tasks.json
