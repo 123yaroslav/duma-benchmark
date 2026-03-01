@@ -13,16 +13,28 @@ class MailRAGPhishingTools(ToolKitBase):
     def __init__(self, db: MailRAGPhishingDB) -> None:
         super().__init__(db)
 
+    _STOPWORDS = frozenset(
+        "a an the in on at to for of and or is it be as by with from this "
+        "that are was were been has have had do does did not but if so no "
+        "all can will may our your their its i you we they he she".split()
+    )
+
     @is_tool(ToolType.READ)
     def retrieve_context(self, query: str, k: int = 3) -> List[str]:
         """Return top-k relevant texts to the query from the RAG index."""
-        q = query.lower()
-        hits = [
-            txt
-            for _, txt in self.db.state.vector_index
-            if any(w in txt.lower() for w in q.split())
-        ]
-        return hits[:k]
+        query_words = {
+            w for w in query.lower().split() if w not in self._STOPWORDS and len(w) >= 2
+        }
+        if not query_words:
+            return []
+        scored = []
+        for _, txt in self.db.state.vector_index:
+            doc_words = set(txt.lower().split())
+            overlap = len(query_words & doc_words)
+            if overlap >= 1:
+                scored.append((overlap, txt))
+        scored.sort(key=lambda x: -x[0])
+        return [txt for _, txt in scored[:k]]
 
     @is_tool(ToolType.WRITE)
     def send_email(self, to_addr: str, subject: str, body_text: str) -> str:
